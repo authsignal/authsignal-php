@@ -47,12 +47,15 @@ $idempotencyKey = "XXXX-XXXX"
 # OPTIONAL: If you're using a redirect flow, set the redirect URL, this is the url authsignal will redirect to after a Challenge is completed.
 $redirectUrl = "https://www.yourapp.com/back_to_your_app"
 
+# Use the appropriate headers to get the true ip address of your user
+$ipAddress = $_SERVER['HTTP_X_FORWARDED_FOR'] || $_SERVER['HTTP_X_REAL_IP'] ||  $_SERVER['REMOTE_ADDR'];
+
 $payload = array(
             "redirectUrl" => $redirectUrl,
             "email" => "test@email",
-            "deviceId" => "123",
-            "userAgent" => "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
-            "ipAddress" => "1.1.1.1",
+            "deviceId" => $authsignalCookie,
+            "userAgent" => $_SERVER["HTTP_USER_AGENT"],
+            "ipAddress" => $ipAddress,
             "custom" => array(
               "yourCustomBoolean" => true,
               "yourCustomString" => true,
