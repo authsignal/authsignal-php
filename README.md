@@ -66,10 +66,10 @@ $payload = array(
 
 *Response*
 ```php
-response = Authsignal::trackAction(...)
+$response = Authsignal::trackAction(...)
 
 
-switch (response["state"]) {
+switch ($response["state"]) {
     case "ALLOW":
         // Carry on with your operation/business logic
         break;
@@ -78,7 +78,7 @@ switch (response["state"]) {
         break;
     case "CHALLENGE_REQUIRED":
         // Step up authentication required, redirect or pass the challengeUrl to the front end
-        response["challengeUrl"]
+        $response["challengeUrl"]
         break;
 }
 ```
@@ -125,4 +125,4 @@ $response = Authsignal::enrolAuthenticator(userId: "123",
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+The library is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
