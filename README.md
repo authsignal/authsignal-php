@@ -80,7 +80,7 @@ switch ($response["state"]) {
         break;
     case "CHALLENGE_REQUIRED":
         // Step up authentication required, redirect or pass the challengeUrl to the front end
-        $response["challengeUrl"]
+        $response["challengeUrl"];
         break;
 }
 ```
@@ -97,7 +97,6 @@ if($response["state"] === "CHALLENGE_SUCCEEDED"){
 // The user has successfully completed the challenge, and you should proceed with
 // the business logic
 }
-    
 ```
 
 ### Get User
