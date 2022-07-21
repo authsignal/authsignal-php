@@ -36,16 +36,16 @@ Add to the rules in the admin portal or the change default decision to influence
 ```php
 # OPTIONAL: The Authsignal cookie available when using the authsignal browser Javascript SDK
 # you could you use own device/session/fingerprinting identifiers.
-$authsignalCookie = $_COOKIE["__as_aid"]
+$authsignalCookie = $_COOKIE["__as_aid"];
 
 # OPTIONAL: The idempotencyKey is a unique identifier per track action
 # this could be for a unique object associated to your application
 # like a shopping cart check out id
 # If ommitted, Authsignal will generate the idempotencyKey and return in the response
-$idempotencyKey = "XXXX-XXXX"
+$idempotencyKey = "XXXX-XXXX";
 
 # OPTIONAL: If you're using a redirect flow, set the redirect URL, this is the url authsignal will redirect to after a Challenge is completed.
-$redirectUrl = "https://www.yourapp.com/back_to_your_app"
+$redirectUrl = "https://www.yourapp.com/back_to_your_app";
 
 # Use the appropriate headers to get the true ip address of your user
 $ipAddress = $_SERVER['HTTP_X_FORWARDED_FOR'] || $_SERVER['HTTP_X_REAL_IP'] ||  $_SERVER['REMOTE_ADDR'];
@@ -91,7 +91,7 @@ Call get action after a challenge is completed by the user, after a redirect or 
 ```php
 $response = Authsignal::getAction(userId: "123",
                                 actionCode: "signIn",
-                                idempotencyKey: "2320ce18-91be-47a8-9bbf-eec642807c34")
+                                idempotencyKey: "2320ce18-91be-47a8-9bbf-eec642807c34");
 
 if($response["state"] === "CHALLENGE_SUCCEEDED")
     # The user has successfully completed the challenge, and you should proceed with
@@ -105,8 +105,8 @@ Get user retrieves the current enrolment state of the user, use this call to red
 ```php
 $response = Authsignal::getUser(userId: "123", redirectUrl: "https://www.example.com/");
 
-$isEnrolled = $response["isEnrolled"]
-$url = $response["isEnrolled"]
+$isEnrolled = $response["isEnrolled"];
+$url = $response["isEnrolled"];
 ```
 
 ### Identify
