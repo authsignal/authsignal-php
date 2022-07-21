@@ -93,10 +93,11 @@ $response = Authsignal::getAction(userId: "123",
                                 actionCode: "signIn",
                                 idempotencyKey: "2320ce18-91be-47a8-9bbf-eec642807c34");
 
-if($response["state"] === "CHALLENGE_SUCCEEDED")
-    # The user has successfully completed the challenge, and you should proceed with
-    # the business logic
-end
+if($response["state"] === "CHALLENGE_SUCCEEDED"){
+// The user has successfully completed the challenge, and you should proceed with
+// the business logic
+}
+    
 ```
 
 ### Get User
