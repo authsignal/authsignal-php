@@ -62,15 +62,14 @@ $payload = array(
               "yourCustomNumber" => 1.12
             ));
 
-        $response = Authsignal::trackAction(userId: "123345",
-                                            actionCode: "signIn",
-                                            payload: $payload);
+$response = Authsignal::trackAction(userId: "123345",
+                                    actionCode: "signIn",
+                                    payload: $payload);
 ```
 
 *Response*
 ```php
 $response = Authsignal::trackAction(...)
-
 
 switch ($response["state"]) {
     case "ALLOW":
