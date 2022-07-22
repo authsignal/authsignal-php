@@ -93,6 +93,7 @@ abstract class Authsignal
   /**
    * Get a user
    * @param  string  $userId The userId of the user you are tracking the action for
+   * @param  string  $redirectUrl The redirectUrl if using the redirect flow (optional)
    * @return Array  The authsignal response
    */
   public static function getUser(string $userId, string $redirectUrl = null)
