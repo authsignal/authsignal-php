@@ -26,6 +26,11 @@ abstract class Authsignal
     self::$apiKey = $apiKey;
   }
 
+  public static function setApiHostname($hostname)
+  {
+    self::$apiHostname = $hostname;
+  }
+
   public static function setCurlOpts($curlOpts)
   {
     $invalidOpts = array_diff(array_keys($curlOpts), self::$validCurlOpts);

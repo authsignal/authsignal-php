@@ -8,11 +8,6 @@ class AuthsignalRequestTransport
   public $rError;
   public $rMessage;
 
-  public static function caCerts()
-  {
-    return dirname(__FILE__) . '/../../certs/ca-certs.crt';
-  }
-
   private function setResponse($curl)
   {
     $response = curl_exec($curl);
@@ -70,7 +65,6 @@ class AuthsignalRequestTransport
     }
 
     // Set our default options.
-    $curlOptions[CURLOPT_CAINFO] = self::caCerts();
     $curlOptions[CURLOPT_URL] = $url;
     $curlOptions[CURLOPT_USERPWD] =  Authsignal::getApiKey() . ":";
     $curlOptions[CURLOPT_RETURNTRANSFER] = true;

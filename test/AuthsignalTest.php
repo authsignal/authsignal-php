@@ -7,6 +7,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
 
     public static function setUpBeforeClass(): void {
         Authsignal::setApiKey('secret');
+        Authsignal::setApiHostname('http://localhost:8080');
     }
 
     public function testSetApiKey()
