@@ -1,0 +1,14 @@
+{
+    "name": "authsignal/authsignal-php",
+    "description": "Authsignal is a passwordless authentication/multifactor authentication step up service with a FraudOps rules engine",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "classmap": [
+          "lib/Authsignal"
+        ]
+    },
+    "require": {}
+}
