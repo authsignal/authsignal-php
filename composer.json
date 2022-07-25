@@ -10,5 +10,8 @@
         "classmap": [
           "lib/Authsignal"
         ]
-    }
+    },
+    "license": [
+        "MIT"
+    ]
 }
