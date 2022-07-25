@@ -74,7 +74,7 @@ abstract class Authsignal
     $userId = urlencode($userId);
     $actionCode = urlencode($actionCode);
     list($response, $request) = $request->send("/users/${userId}/actions/${actionCode}", $payload, 'post');
-
+    
     return $response;
   }
 
