@@ -9,7 +9,7 @@
 ```php
 "require": {
     ...
-    "authsignal/authsignal-php" : "0.1.0"
+    "authsignal/authsignal-php" : "0.1.2"
     ...
 }
 ```
