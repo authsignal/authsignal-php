@@ -26,6 +26,11 @@ abstract class Authsignal
     self::$apiKey = $apiKey;
   }
 
+  public static function setApiHostname($hostname)
+  {
+    self::$apiHostname = $hostname;
+  }
+
   public static function setCurlOpts($curlOpts)
   {
     $invalidOpts = array_diff(array_keys($curlOpts), self::$validCurlOpts);
@@ -68,7 +73,7 @@ abstract class Authsignal
     $request = new AuthsignalClient();
     $userId = urlencode($userId);
     $actionCode = urlencode($actionCode);
-    list($response, $request) = $request->send("/users/${userId}/actions/${actionCode}", $payload, 'post');
+    list($response, $request) = $request->send("/users/${userId}/actions/${actionCode}", $payload, 'POST');
 
     return $response;
   }
@@ -85,7 +90,7 @@ abstract class Authsignal
     $request = new AuthsignalClient();
     $userId = urlencode($userId);
     $actionCode = urlencode($actionCode);
-    list($response, $request) = $request->send("/users/${userId}/actions/${actionCode}/${idempotencyKey}", array(), 'get');
+    list($response, $request) = $request->send("/users/${userId}/actions/${actionCode}/${idempotencyKey}", array(), 'GET');
 
     return $response;
   }
@@ -119,7 +124,7 @@ abstract class Authsignal
   {
     $request = new AuthsignalClient();
     $userId = urlencode($userId);
-    list($response, $request) = $request->send("/users/${userId}", $user, 'post');
+    list($response, $request) = $request->send("/users/${userId}", $user, 'POST');
 
     return $response;
   }
@@ -134,7 +139,7 @@ abstract class Authsignal
   {
     $request = new AuthsignalClient();
     $userId = urlencode($userId);
-    list($response, $request) = $request->send("/users/${userId}/authenticators", $authenticator, 'post');
+    list($response, $request) = $request->send("/users/${userId}/authenticators", $authenticator, 'POST');
 
     return $response;
   }

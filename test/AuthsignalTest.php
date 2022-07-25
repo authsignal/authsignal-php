@@ -6,12 +6,13 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 class AuthsignalTest extends PHPUnit\Framework\TestCase {
 
     public static function setUpBeforeClass(): void {
-        Authsignal::setApiKey('secret');
+        Authsignal::setApiKey('2s+2kWC083rKOdGxUaVPEvzGsn+cwtZdSRgWWTeEhFGWea29kDcLfA==');
+        //Authsignal::setApiHostname('http://localhost:8080');
+        Authsignal::setApiHostname('https://dev-signal.authsignal.com');
     }
 
-    public function testSetApiKey()
-    {
-        $this->assertEquals('secret', Authsignal::getApiKey());
+    public function testSetApiKey(){
+        $this->assertEquals('2s+2kWC083rKOdGxUaVPEvzGsn+cwtZdSRgWWTeEhFGWea29kDcLfA==', Authsignal::getApiKey());
     }
 
     public function testTrackAction() {
@@ -30,6 +31,8 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
         $response = Authsignal::trackAction(userId: "123:test",
                                             actionCode: "signIn",
                                             payload: $payload);
+
+        print_r($response);
     }
 
     public function testgetAction() {

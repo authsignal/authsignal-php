@@ -1,5 +1,8 @@
 <?php
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+
 class AuthsignalClient
 {
   public static function apiUrl($url='')
@@ -10,6 +13,7 @@ class AuthsignalClient
       $apiVersion = Authsignal::getApiVersion();
       $apiEndpoint = $apiBase.'/'.$apiVersion;
     }
+    
     return $apiEndpoint.$url;
   }
 
@@ -46,16 +50,12 @@ class AuthsignalClient
 
   public function handleResponse($request)
   {
-    if ($request->rError) {
-      $this->handleRequestError($request);
-    }
-
-    $response = json_decode($request->rBody, true);
+    $response = json_decode($request->getBody(), true);
     if (!empty($request->rBody) && $response === null) {
       throw new AuthsignalApiError('Invalid response from API', 'api_error', $request->rStatus);
     }
 
-    if ($request->rStatus < 200 || $request->rStatus >= 300) {
+    if ($request->getStatusCode() < 200 || $request->getStatusCode() >= 300) {
       $this->handleApiError($response, $request->rStatus);
     }
 
@@ -74,9 +74,19 @@ class AuthsignalClient
   {
     $this->preCheck();
 
-    $request = new AuthsignalRequestTransport();
-    $request->send($method, self::apiUrl($url), $payload);
+    $client = new Client([
+      'headers' => [                                                                                                                                                                   
+        'Authorization' => ['Basic '.base64_encode(Authsignal::getApiKey().':')],                                                                                                 
+      ]
+    ]);
 
-    return $this->handleResponse($request);
+    try {
+      $response = $client->request($method , self::apiUrl($url), [ "json" => $payload ]);
+    } catch (RequestException $e) {
+      $response = $e->getResponse();
+      $this->handleApiError(json_decode($response->getBody(), true), $response->getStatusCode());
+    }
+
+    $this->handleResponse($response);
   }
 }
