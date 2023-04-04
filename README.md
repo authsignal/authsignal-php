@@ -2,6 +2,8 @@
 
 [Authsignal](https://www.authsignal.com/?utm_source=github&utm_medium=php_sdk) provides passwordless step up authentication (Multi-factor Authentication - MFA) that can be placed anywhere within your application. Authsignal also provides a no-code fraud risk rules engine to manage when step up challenges are triggered.
 
+For the most up to date documentation please review our main [API documenation portal](https://docs.authsignal.com).
+
 ## Installation
 
 1. Add Authsignal's library as a depependency in composer.json
@@ -22,6 +24,21 @@ Initialize the Authsignal SDK, ensuring you do not hard code the Authsignal Secr
 
 ```php
 Authsignal::setApiKey('secret');
+```
+
+## Region selection
+Authsignal has different api hosting regions, to view your hostname for your tenant, find it in the API keys section of the Authsignal Admin portal. You can set the hostname via the following, if the following `setApiHostname` function is not called, the api call defaults the main Authsignal US region hostname `https://signal.authsignal.com`
+
+Example setting the client to use the AU region.
+
+```php
+Authsignal::setApiHostname("https://au.signal.authsignal.com");
+```
+
+Another way to set the API path for the client to use is through an environment variable.
+
+```bash
+AUTHSIGNAL_SERVER_API_ENDPOINT=https://au.signal.authsignal.com/v1
 ```
 
 ## Usage
