@@ -27,9 +27,11 @@ Authsignal::setApiKey('secret');
 ```
 
 ## Region selection
-Authsignal has different api hosting regions, to view your hostname for your tenant, find it in the API keys section of the Authsignal Admin portal. You can set the hostname via the following, if the following `setApiHostname` function is not called, the api call defaults the main Authsignal US region hostname `https://signal.authsignal.com`
+Authsignal has different api hosting regions, to view your hostname for your tenant, find it in the API keys section of the Authsignal Admin portal.
 
-Example setting the client to use the AU region.
+You can set the hostname via the following, if the following `setApiHostname` function is not called, the api call defaults the main Authsignal US region hostname `https://signal.authsignal.com`
+
+An example setting the client to use the AU region.
 
 ```php
 Authsignal::setApiHostname("https://au.signal.authsignal.com");
