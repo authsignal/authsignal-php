@@ -34,8 +34,8 @@ Authsignal has multiple api hosting regions. To view your hostname for your tena
 | Region      | Base URL                            |
 | ----------- | ----------------------------------- |
 | US (Oregon) | https://signal.authsignal.com/v1    |
-| AU (Sydney) | https://au-signal.authsignal.com/v1 |
-| EU (Dublin) | https://eu-signal.authsignal.com/v1 |
+| AU (Sydney) | https://au.signal.authsignal.com/v1 |
+| EU (Dublin) | https://eu.signal.authsignal.com/v1 |
 
 You can set the hostname via the following code. If the `setApiHostname` function is not called, the api call defaults to the main Authsignal US region hostname `https://signal.authsignal.com`
 
