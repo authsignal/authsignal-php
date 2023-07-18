@@ -31,11 +31,11 @@ You can find your `secretKey` in the [Authsignal Portal](https://portal.authsign
 
 Authsignal has multiple api hosting regions. To view your hostname for your tenant, find it in the [Authsignal Portal](https://portal.authsignal.com/organisations/tenants/api).
 
-| Region      | Base URL                               |
-| ----------- | -------------------------------------- |
-| US (Oregon) | https://challenge.authsignal.com/v1    |
-| AU (Sydney) | https://au-challenge.authsignal.com/v1 |
-| EU (Dublin) | https://eu-challenge.authsignal.com/v1 |
+| Region      | Base URL                            |
+| ----------- | ----------------------------------- |
+| US (Oregon) | https://signal.authsignal.com/v1    |
+| AU (Sydney) | https://au-signal.authsignal.com/v1 |
+| EU (Dublin) | https://eu-signal.authsignal.com/v1 |
 
 You can set the hostname via the following code. If the `setApiHostname` function is not called, the api call defaults to the main Authsignal US region hostname `https://signal.authsignal.com`
 
