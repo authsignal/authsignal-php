@@ -1,5 +1,8 @@
 <?php
 
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
 abstract class Authsignal
 {
   const VERSION = '0.1.0';
@@ -142,6 +145,53 @@ abstract class Authsignal
     list($response, $request) = $request->send("/users/${userId}/authenticators", $authenticator, 'post');
 
     return $response;
+  }
+
+  /**
+   * Validate Challenge
+   * Validates the token returned on a challenge response, this is a critical security measure
+   * also performs a back-end call to validate the state
+   * @param  string  $userId The userId of the user you are tracking the action for
+   * @param  string  $token  The JWT token string returned on a challenge response
+   * @return Array  The authsignal response
+   */
+  public static function validateChallenge(string $userId, string $token)
+  {
+    $key = self::getApiKey();
+    $decoded = (array)JWT::decode($token, new Key($key, 'HS256'));
+    $otherClaim = (array)$decoded['other'];
+
+    $decodedUserId = $otherClaim["userId"];
+    $decodedActionCode = $otherClaim["actionCode"];
+    $decodedIdempotencyKey= $otherClaim["idempotencyKey"];
+
+    if ($userId != $decodedUserId)
+    {
+      return [
+        "userId"  => $decodedUserId,
+        "success" => false,
+        "state" => null
+      ];
+    }
+
+    if($decodedActionCode && $decodedIdempotencyKey){
+      $action = self::getAction(userId: $decodedUserId, actionCode: $decodedActionCode, idempotencyKey: $decodedIdempotencyKey);
+
+      if($action){
+        $success = $action["state"] === "CHALLENGE_SUCCEEDED";
+        return [
+          "userId"  => $decodedUserId,
+          "success" => $success,
+          "state" => $action["state"]
+        ];
+      }
+    }
+
+    return [
+      "userId"  => $decodedUserId,
+      "success" => false,
+      "state" => null
+    ];
   }
 
 }
