@@ -6,6 +6,8 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\Response;
 
+use Firebase\JWT\JWT;
+
 class AuthsignalTest extends PHPUnit\Framework\TestCase {
     /** @var MockWebServer */
 	protected static $server;
@@ -97,7 +99,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
         $this->assertEquals($response["email"], $mockedResponse["email"]);
     }
 
-    public function testEnrolAuthenticator() {
+    public function testEnrollAuthenticator() {
         $mockedResponse = array(
             "authenticator" => array(
                 "userAuthenticatorId" => "9b2cfd40-7df2-4658-852d-a0c3456e5a2e",
@@ -109,10 +111,39 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
 
         self::$server->setResponseOfPath("/v1/users/123%3Atest/authenticators", new Response(json_encode($mockedResponse)));
 
-        $response = Authsignal::enrolAuthenticator(userId: "123:test",
+        $response = Authsignal::enrollAuthenticator(userId: "123:test",
                                                    authenticator: array("oobChannel" => "SMS"
                                                                 ,"phoneNumber" => "+6427000000"));
         
         $this->assertEquals($response["authenticator"]["userAuthenticatorId"], $mockedResponse["authenticator"]["userAuthenticatorId"]);
+    }
+
+    public function testValidateChallenge() {
+        $mockedResponse = array("state" => "CHALLENGE_SUCCEEDED",
+              "idempotencyKey" => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
+              "stateUpdatedAt" => "2022-07-25T03:19:00.316Z",
+              "createdAt" => "2022-07-25T03:19:00.316Z",
+              "ruleIds" => []);
+
+        self::$server->setResponseOfPath("/v1/users/123%3Atest/actions/signIn/5924a649-b5d3-4baf-a4ab-4b812dde97a0", new Response(json_encode($mockedResponse)));
+
+        $key = "secret";
+        $testTokenPayload = [
+            'iss' => 'http://example.org',
+            'aud' => 'http://example.com',
+            'iat' => 1356999524,
+            'nbf' => 1357000000,
+            'other' => [
+                'userId' => "123:test",
+                'state' => "CHALLENGE_SUCCEEDED",
+                'actionCode' => 'signIn',
+                'idempotencyKey' => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
+            ]
+        ];
+        $token = JWT::encode($testTokenPayload, $key, 'HS256');
+
+        $response = Authsignal::validateChallenge(userId: "123:test", token: $token);
+
+        $this->assertEquals($response["success"], true);
     }
 }

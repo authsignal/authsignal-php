@@ -9,7 +9,7 @@ Check out our [official PHP SDK documentation](https://docs.authsignal.com/sdks/
 ```php
 "require": {
     ...
-    "authsignal/authsignal-php" : "0.1.2"
+    "authsignal/authsignal-php" : "0.1.3"
     ...
 }
 ```
@@ -53,7 +53,7 @@ AUTHSIGNAL_SERVER_API_ENDPOINT=https://au.signal.authsignal.com/v1
 
 ## Usage
 
-Authsignal's server side signal API has four main calls `trackAction`, `getAction`, `getUser`, `enrolAuthenticator`
+Authsignal's server side signal API has five main calls `trackAction`, `getAction`, `getUser`, `enrollAuthenticator`, `verifyChallenge`
 
 For more details on these api calls, refer to our [official PHP SDK docs](https://docs.authsignal.com/sdks/server/php#trackaction).
 
