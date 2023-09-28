@@ -133,12 +133,26 @@ abstract class Authsignal
   }
 
   /**
+   * @deprecated
    * Enrol Authenticators
    * @param  string  $userId The userId of the user you are tracking the action for
    * @param  Array   $authenticator The authenticator object
    * @return Array  The authsignal response
    */
   public static function enrolAuthenticator(string $userId, Array $authenticator)
+  {
+    $response = self::enrollAuthenticator(userId: $userId, authenticator: $authenticator);
+
+    return $response;
+  }
+
+  /**
+   * Enroll Authenticators
+   * @param  string  $userId The userId of the user you are tracking the action for
+   * @param  Array   $authenticator The authenticator object
+   * @return Array  The authsignal response
+   */
+  public static function enrollAuthenticator(string $userId, Array $authenticator)
   {
     $request = new AuthsignalClient();
     $userId = urlencode($userId);
