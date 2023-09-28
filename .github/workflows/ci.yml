@@ -11,5 +11,4 @@ jobs:
     - uses: php-actions/composer@v6
       with:
         php_extensions: sockets
-    - uses: php-actions/phpunit@v3
     - run: composer exec phpunit -v -- --bootstrap vendor/autoload.php test
