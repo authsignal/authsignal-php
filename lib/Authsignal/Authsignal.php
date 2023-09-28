@@ -165,11 +165,11 @@ abstract class Authsignal
    * Validate Challenge
    * Validates the token returned on a challenge response, this is a critical security measure
    * also performs a back-end call to validate the state
-   * @param  string  $userId The userId of the user you are tracking the action for
+   * @param  string|null  $userId The userId of the user you are tracking the action for
    * @param  string  $token  The JWT token string returned on a challenge response
    * @return Array  The authsignal response
    */
-  public static function validateChallenge(string $userId, string $token)
+  public static function validateChallenge(string $token, string|null $userId = null)
   {
     $key = self::getApiKey();
     $decoded = (array)JWT::decode($token, new Key($key, 'HS256'));
@@ -179,7 +179,7 @@ abstract class Authsignal
     $decodedActionCode = $otherClaim["actionCode"];
     $decodedIdempotencyKey= $otherClaim["idempotencyKey"];
 
-    if ($userId != $decodedUserId)
+    if ($userId && ($userId != $decodedUserId))
     {
       return [
         "userId"  => $decodedUserId,
