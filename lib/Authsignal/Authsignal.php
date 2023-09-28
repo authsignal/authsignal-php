@@ -5,7 +5,7 @@ use Firebase\JWT\Key;
 
 abstract class Authsignal
 {
-  const VERSION = '0.1.0';
+  const VERSION = '0.1.5';
 
   public static $apiKey;
 
@@ -141,7 +141,7 @@ abstract class Authsignal
    */
   public static function enrolAuthenticator(string $userId, Array $authenticator)
   {
-    $response = self::enrollAuthenticator(userId: $userId, authenticator: $authenticator);
+    $response = self::enrollAuthenticator($userId, $authenticator);
 
     return $response;
   }
@@ -169,7 +169,7 @@ abstract class Authsignal
    * @param  string  $token  The JWT token string returned on a challenge response
    * @return Array  The authsignal response
    */
-  public static function validateChallenge(string $token, string|null $userId = null)
+  public static function validateChallenge(string $token, ?string $userId = null)
   {
     $key = self::getApiKey();
     $decoded = (array)JWT::decode($token, new Key($key, 'HS256'));
@@ -189,7 +189,7 @@ abstract class Authsignal
     }
 
     if($decodedActionCode && $decodedIdempotencyKey){
-      $action = self::getAction(userId: $decodedUserId, actionCode: $decodedActionCode, idempotencyKey: $decodedIdempotencyKey);
+      $action = self::getAction($decodedUserId, $decodedActionCode, $decodedIdempotencyKey);
 
       if($action){
         $success = $action["state"] === "CHALLENGE_SUCCEEDED";
