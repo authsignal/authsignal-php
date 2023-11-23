@@ -50,7 +50,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
             ));
 
         $response = Authsignal::track(userId: "123:test",
-                                            actionCode: "signIn",
+                                            action: "signIn",
                                             payload: $payload);
 
         $this->assertEquals($response["state"], "ALLOW");
@@ -68,7 +68,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
         self::$server->setResponseOfPath("/v1/users/123%3Atest/actions/signIn/5924a649-b5d3-4baf-a4ab-4b812dde97a04", new Response(json_encode($mockedResponse)));
 
         $response = Authsignal::getAction(userId: "123:test",
-                                            actionCode: "signIn",
+                                            action: "signIn",
                                             idempotencyKey: "5924a649-b5d3-4baf-a4ab-4b812dde97a04");
 
         $this->assertEquals($response["state"], "ALLOW");
@@ -136,7 +136,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
             'other' => [
                 'userId' => "123:test",
                 'state' => "CHALLENGE_SUCCEEDED",
-                'actionCode' => 'signIn',
+                'action' => 'signIn',
                 'idempotencyKey' => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
             ]
         ];
@@ -165,7 +165,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
             'other' => [
                 'userId' => "123:test",
                 'state' => "CHALLENGE_SUCCEEDED",
-                'actionCode' => 'signIn',
+                'action' => 'signIn',
                 'idempotencyKey' => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
             ]
         ];
