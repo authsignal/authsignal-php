@@ -118,21 +118,6 @@ abstract class Authsignal
   }
 
   /**
-   * Identify
-   * @param  string  $userId The userId of the user you are tracking the action for
-   * @param  Array  $user The user object with email
-   * @return Array  The authsignal response
-   */
-  public static function identify(string $userId, Array $user)
-  {
-    $request = new AuthsignalClient();
-    $userId = urlencode($userId);
-    list($response, $request) = $request->send("/users/{$userId}", $user, 'post');
-
-    return $response;
-  }
-
-  /**
    * Enroll Authenticators
    * @param  string  $userId The userId of the user you are tracking the action for
    * @param  Array   $authenticator The authenticator object

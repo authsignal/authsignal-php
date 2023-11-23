@@ -86,18 +86,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
         
         $this->assertEquals($response["isEnrolled"], $mockedResponse["isEnrolled"]);
         $this->assertEquals($response["url"], $mockedResponse["url"]);
-    }
-
-    public function testIdentify() {
-        $mockedResponse = array("userId" => "123:test",
-              "email" => "test@test.com");
-
-        self::$server->setResponseOfPath("/v1/users/123%3Atest", new Response(json_encode($mockedResponse)));
-        $response = Authsignal::identify(userId: "123:test", user: array("email" => "test@test.com"));
-
-        $this->assertEquals($response["userId"], $mockedResponse["userId"]);
-        $this->assertEquals($response["email"], $mockedResponse["email"]);
-    }
+    }   
 
     public function testenrollVerifiedAuthenticator() {
         $mockedResponse = array(
