@@ -139,9 +139,9 @@ abstract class Authsignal
    * @param  Array   $authenticator The authenticator object
    * @return Array  The authsignal response
    */
-  public static function enrolAuthenticator(string $userId, Array $authenticator)
+  public static function enrollVerifiedAuthenticator(string $userId, Array $authenticator)
   {
-    $response = self::enrollAuthenticator($userId, $authenticator);
+    $response = self::enrollVerifiedAuthenticator($userId, $authenticator);
 
     return $response;
   }
@@ -152,7 +152,7 @@ abstract class Authsignal
    * @param  Array   $authenticator The authenticator object
    * @return Array  The authsignal response
    */
-  public static function enrollAuthenticator(string $userId, Array $authenticator)
+  public static function enrollVerifiedAuthenticator(string $userId, Array $authenticator)
   {
     $request = new AuthsignalClient();
     $userId = urlencode($userId);

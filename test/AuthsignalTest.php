@@ -99,7 +99,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
         $this->assertEquals($response["email"], $mockedResponse["email"]);
     }
 
-    public function testEnrollAuthenticator() {
+    public function testenrollVerifiedAuthenticator() {
         $mockedResponse = array(
             "authenticator" => array(
                 "userAuthenticatorId" => "9b2cfd40-7df2-4658-852d-a0c3456e5a2e",
@@ -111,7 +111,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
 
         self::$server->setResponseOfPath("/v1/users/123%3Atest/authenticators", new Response(json_encode($mockedResponse)));
 
-        $response = Authsignal::enrollAuthenticator(userId: "123:test",
+        $response = Authsignal::enrollVerifiedAuthenticator(userId: "123:test",
                                                    authenticator: array("oobChannel" => "SMS"
                                                                 ,"phoneNumber" => "+6427000000"));
         
