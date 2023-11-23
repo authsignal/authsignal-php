@@ -49,8 +49,8 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
               "yourCustomNumber" => 1.12
             ));
 
-        $response = Authsignal::trackAction(userId: "123:test",
-                                            actionCode: "signIn",
+        $response = Authsignal::track(userId: "123:test",
+                                            action: "signIn",
                                             payload: $payload);
 
         $this->assertEquals($response["state"], "ALLOW");
@@ -68,7 +68,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
         self::$server->setResponseOfPath("/v1/users/123%3Atest/actions/signIn/5924a649-b5d3-4baf-a4ab-4b812dde97a04", new Response(json_encode($mockedResponse)));
 
         $response = Authsignal::getAction(userId: "123:test",
-                                            actionCode: "signIn",
+                                            action: "signIn",
                                             idempotencyKey: "5924a649-b5d3-4baf-a4ab-4b812dde97a04");
 
         $this->assertEquals($response["state"], "ALLOW");
@@ -86,20 +86,9 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
         
         $this->assertEquals($response["isEnrolled"], $mockedResponse["isEnrolled"]);
         $this->assertEquals($response["url"], $mockedResponse["url"]);
-    }
+    }   
 
-    public function testIdentify() {
-        $mockedResponse = array("userId" => "123:test",
-              "email" => "test@test.com");
-
-        self::$server->setResponseOfPath("/v1/users/123%3Atest", new Response(json_encode($mockedResponse)));
-        $response = Authsignal::identify(userId: "123:test", user: array("email" => "test@test.com"));
-
-        $this->assertEquals($response["userId"], $mockedResponse["userId"]);
-        $this->assertEquals($response["email"], $mockedResponse["email"]);
-    }
-
-    public function testEnrollAuthenticator() {
+    public function testEnrollVerifiedAuthenticator() {
         $mockedResponse = array(
             "authenticator" => array(
                 "userAuthenticatorId" => "9b2cfd40-7df2-4658-852d-a0c3456e5a2e",
@@ -111,7 +100,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
 
         self::$server->setResponseOfPath("/v1/users/123%3Atest/authenticators", new Response(json_encode($mockedResponse)));
 
-        $response = Authsignal::enrollAuthenticator(userId: "123:test",
+        $response = Authsignal::enrollVerifiedAuthenticator(userId: "123:test",
                                                    authenticator: array("oobChannel" => "SMS"
                                                                 ,"phoneNumber" => "+6427000000"));
         
@@ -136,7 +125,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
             'other' => [
                 'userId' => "123:test",
                 'state' => "CHALLENGE_SUCCEEDED",
-                'actionCode' => 'signIn',
+                'action' => 'signIn',
                 'idempotencyKey' => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
             ]
         ];
@@ -165,7 +154,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
             'other' => [
                 'userId' => "123:test",
                 'state' => "CHALLENGE_SUCCEEDED",
-                'actionCode' => 'signIn',
+                'action' => 'signIn',
                 'idempotencyKey' => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
             ]
         ];

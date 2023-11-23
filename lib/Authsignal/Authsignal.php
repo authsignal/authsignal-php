@@ -5,7 +5,7 @@ use Firebase\JWT\Key;
 
 abstract class Authsignal
 {
-  const VERSION = '0.1.5';
+  const VERSION = '1.0.0';
 
   public static $apiKey;
 
@@ -67,16 +67,16 @@ abstract class Authsignal
   /**
    * Track an action
    * @param  string  $userId The userId of the user you are tracking the action for
-   * @param  string  $actionCode The action code that you are tracking
+   * @param  string  $action The action code that you are tracking
    * @param  Array  $payload An array of attributes to track.
    * @return Array  The authsignal response
    */
-  public static function trackAction(string $userId, string $actionCode, Array $payload)
+  public static function track(string $userId, string $action, Array $payload)
   {
     $request = new AuthsignalClient();
     $userId = urlencode($userId);
-    $actionCode = urlencode($actionCode);
-    list($response, $request) = $request->send("/users/${userId}/actions/${actionCode}", $payload, 'post');
+    $action = urlencode($action);
+    list($response, $request) = $request->send("/users/{$userId}/actions/{$action}", $payload, 'post');
     
     return $response;
   }
@@ -84,16 +84,16 @@ abstract class Authsignal
   /**
    * Get an action
    * @param  string  $userId The userId of the user you are tracking the action for
-   * @param  string  $actionCode The action code that you are tracking
+   * @param  string  $action The action code that you are tracking
    * @param  string  $idempotencyKey The action code that you are tracking
    * @return Array  The authsignal response
    */
-  public static function getAction(string $userId, string $actionCode, string $idempotencyKey)
+  public static function getAction(string $userId, string $action, string $idempotencyKey)
   {
     $request = new AuthsignalClient();
     $userId = urlencode($userId);
-    $actionCode = urlencode($actionCode);
-    list($response, $request) = $request->send("/users/${userId}/actions/${actionCode}/${idempotencyKey}", array(), 'get');
+    $action = urlencode($action);
+    list($response, $request) = $request->send("/users/{$userId}/actions/{$action}/{$idempotencyKey}", array(), 'get');
 
     return $response;
   }
@@ -111,37 +111,8 @@ abstract class Authsignal
 
     $redirectUrl = empty($redirectUrl) ? null : urlencode($redirectUrl);
   
-    $path = empty($redirectUrl) ? "/users/${userId}" : "/users/${userId}?redirectUrl=${redirectUrl}";
+    $path = empty($redirectUrl) ? "/users/{$userId}" : "/users/{$userId}?redirectUrl={$redirectUrl}";
     list($response, $request) = $request->send($path, null, 'get');
-
-    return $response;
-  }
-
-  /**
-   * Identify
-   * @param  string  $userId The userId of the user you are tracking the action for
-   * @param  Array  $user The user object with email
-   * @return Array  The authsignal response
-   */
-  public static function identify(string $userId, Array $user)
-  {
-    $request = new AuthsignalClient();
-    $userId = urlencode($userId);
-    list($response, $request) = $request->send("/users/${userId}", $user, 'post');
-
-    return $response;
-  }
-
-  /**
-   * @deprecated
-   * Enrol Authenticators
-   * @param  string  $userId The userId of the user you are tracking the action for
-   * @param  Array   $authenticator The authenticator object
-   * @return Array  The authsignal response
-   */
-  public static function enrolAuthenticator(string $userId, Array $authenticator)
-  {
-    $response = self::enrollAuthenticator($userId, $authenticator);
 
     return $response;
   }
@@ -152,11 +123,11 @@ abstract class Authsignal
    * @param  Array   $authenticator The authenticator object
    * @return Array  The authsignal response
    */
-  public static function enrollAuthenticator(string $userId, Array $authenticator)
+  public static function enrollVerifiedAuthenticator(string $userId, Array $authenticator)
   {
     $request = new AuthsignalClient();
     $userId = urlencode($userId);
-    list($response, $request) = $request->send("/users/${userId}/authenticators", $authenticator, 'post');
+    list($response, $request) = $request->send("/users/{$userId}/authenticators", $authenticator, 'post');
 
     return $response;
   }
@@ -176,7 +147,7 @@ abstract class Authsignal
     $otherClaim = (array)$decoded['other'];
 
     $decodedUserId = $otherClaim["userId"];
-    $decodedActionCode = $otherClaim["actionCode"];
+    $decodedActionCode = $otherClaim["action"];
     $decodedIdempotencyKey= $otherClaim["idempotencyKey"];
 
     if ($userId && ($userId != $decodedUserId))
