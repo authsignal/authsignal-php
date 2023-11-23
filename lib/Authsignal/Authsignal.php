@@ -71,7 +71,7 @@ abstract class Authsignal
    * @param  Array  $payload An array of attributes to track.
    * @return Array  The authsignal response
    */
-  public static function trackAction(string $userId, string $actionCode, Array $payload)
+  public static function track(string $userId, string $actionCode, Array $payload)
   {
     $request = new AuthsignalClient();
     $userId = urlencode($userId);

@@ -49,7 +49,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
               "yourCustomNumber" => 1.12
             ));
 
-        $response = Authsignal::trackAction(userId: "123:test",
+        $response = Authsignal::track(userId: "123:test",
                                             actionCode: "signIn",
                                             payload: $payload);
 

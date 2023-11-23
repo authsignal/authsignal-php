@@ -53,7 +53,7 @@ AUTHSIGNAL_SERVER_API_ENDPOINT=https://au.signal.authsignal.com/v1
 
 ## Usage
 
-Authsignal's server side signal API has five main calls `trackAction`, `getAction`, `getUser`, `enrollVerifiedAuthenticator`, `verifyChallenge`
+Authsignal's server side signal API has five main calls `track`, `getAction`, `getUser`, `enrollVerifiedAuthenticator`, `verifyChallenge`
 
 For more details on these api calls, refer to our [official PHP SDK docs](https://docs.authsignal.com/sdks/server/php#trackaction).
 
