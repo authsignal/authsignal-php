@@ -88,7 +88,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
         $this->assertEquals($response["url"], $mockedResponse["url"]);
     }   
 
-    public function testenrollVerifiedAuthenticator() {
+    public function testEnrollVerifiedAuthenticator() {
         $mockedResponse = array(
             "authenticator" => array(
                 "userAuthenticatorId" => "9b2cfd40-7df2-4658-852d-a0c3456e5a2e",
