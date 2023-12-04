@@ -125,7 +125,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
             'other' => [
                 'userId' => "123:test",
                 'state' => "CHALLENGE_SUCCEEDED",
-                'action' => 'signIn',
+                'actionCode' => 'signIn',
                 'idempotencyKey' => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
             ]
         ];
@@ -154,7 +154,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
             'other' => [
                 'userId' => "123:test",
                 'state' => "CHALLENGE_SUCCEEDED",
-                'action' => 'signIn',
+                'actionCode' => 'signIn',
                 'idempotencyKey' => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
             ]
         ];
