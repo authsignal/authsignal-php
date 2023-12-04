@@ -147,7 +147,7 @@ abstract class Authsignal
     $otherClaim = (array)$decoded['other'];
 
     $decodedUserId = $otherClaim["userId"];
-    $decodedActionCode = $otherClaim["action"];
+    $decodedActionCode = $otherClaim["actionCode"];
     $decodedIdempotencyKey= $otherClaim["idempotencyKey"];
 
     if ($userId && ($userId != $decodedUserId))
