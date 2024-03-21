@@ -16,7 +16,7 @@ class AuthsignalClient
   public function handleApiError($response, $status)
   {
     $type = $response['error'] ?? null;
-    $msg  = $response['message'];
+    $msg  = $response['message'] ?? null;
     switch ($status) {
       case 400:
         throw new AuthsignalBadRequest($msg, $type, $status);
