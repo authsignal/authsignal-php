@@ -5,7 +5,7 @@ use Firebase\JWT\Key;
 
 abstract class Authsignal
 {
-  const VERSION = '1.0.3';
+  const VERSION = '2.0.0';
 
   public static $apiKey;
 
@@ -142,41 +142,15 @@ abstract class Authsignal
    */
   public static function validateChallenge(string $token, ?string $userId = null)
   {
-    $key = self::getApiKey();
-    $decoded = (array)JWT::decode($token, new Key($key, 'HS256'));
-    $otherClaim = (array)$decoded['other'];
+    $request = new AuthsignalClient();
 
-    $decodedUserId = $otherClaim["userId"];
-    $decodedActionCode = $otherClaim["actionCode"];
-    $decodedIdempotencyKey= $otherClaim["idempotencyKey"];
-
-    if ($userId && ($userId != $decodedUserId))
-    {
-      return [
-        "userId"  => $decodedUserId,
-        "success" => false,
-        "state" => null
-      ];
-    }
-
-    if($decodedActionCode && $decodedIdempotencyKey){
-      $action = self::getAction($decodedUserId, $decodedActionCode, $decodedIdempotencyKey);
-
-      if($action){
-        $success = $action["state"] === "CHALLENGE_SUCCEEDED";
-        return [
-          "userId"  => $decodedUserId,
-          "success" => $success,
-          "state" => $action["state"]
-        ];
-      }
-    }
-
-    return [
-      "userId"  => $decodedUserId,
-      "success" => false,
-      "state" => null
+    $payload = [
+      'userId' => $userId,
+      'token' => $token
     ];
-  }
 
+    list($response, $request) = $request->send("/validate", $payload, 'post');
+    
+    return $response;
+  }
 }

@@ -111,10 +111,12 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
         $mockedResponse = array("state" => "CHALLENGE_SUCCEEDED",
               "idempotencyKey" => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
               "stateUpdatedAt" => "2022-07-25T03:19:00.316Z",
-              "createdAt" => "2022-07-25T03:19:00.316Z",
-              "ruleIds" => []);
+              "userId" => "123:test",
+              "isValid" => "true",
+              "actionCode" => "signIn",
+              "verificationMethod" => "AUTHENTICATOR_APP");
 
-        self::$server->setResponseOfPath("/v1/users/123%3Atest/actions/signIn/5924a649-b5d3-4baf-a4ab-4b812dde97a0", new Response(json_encode($mockedResponse)));
+        self::$server->setResponseOfPath("/v1/validate", new Response(json_encode($mockedResponse)));
 
         $key = "secret";
         $testTokenPayload = [
@@ -133,17 +135,19 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
 
         $response = Authsignal::validateChallenge(userId: "123:test", token: $token);
 
-        $this->assertEquals($response["success"], true);
+        $this->assertEquals($response['isValid'], "true");
     }
 
     public function testValidateChallengeOptionalUserId() {
         $mockedResponse = array("state" => "CHALLENGE_SUCCEEDED",
               "idempotencyKey" => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
               "stateUpdatedAt" => "2022-07-25T03:19:00.316Z",
-              "createdAt" => "2022-07-25T03:19:00.316Z",
-              "ruleIds" => []);
+              "userId" => null,
+              "isValid" => "true",
+              "actionCode" => "signIn",
+              "verificationMethod" => "AUTHENTICATOR_APP");
 
-        self::$server->setResponseOfPath("/v1/users/123%3Atest/actions/signIn/5924a649-b5d3-4baf-a4ab-4b812dde97a0", new Response(json_encode($mockedResponse)));
+              self::$server->setResponseOfPath("/v1/validate", new Response(json_encode($mockedResponse)));
 
         $key = "secret";
         $testTokenPayload = [
@@ -152,7 +156,6 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
             'iat' => 1356999524,
             'nbf' => 1357000000,
             'other' => [
-                'userId' => "123:test",
                 'state' => "CHALLENGE_SUCCEEDED",
                 'actionCode' => 'signIn',
                 'idempotencyKey' => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
@@ -162,6 +165,6 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
 
         $response = Authsignal::validateChallenge(token: $token);
 
-        $this->assertEquals($response["success"], true);
+        $this->assertEquals($response["isValid"], "true");
     }
 }
