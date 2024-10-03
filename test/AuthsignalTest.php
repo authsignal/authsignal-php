@@ -170,11 +170,11 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
 
     public function testDeleteUser() {
         $mockedResponse = array("success" => true);
-
-        self::$server->setResponseOfPath("/v1/users/1234", new Response(json_encode($mockedResponse), 200));
-
+    
+        self::$server->setResponseOfPath("/v1/users/1234", new Response(json_encode($mockedResponse), [], 200));
+    
         $response = Authsignal::deleteUser("1234");
-
+    
         $this->assertEquals($response["success"], true);
     }
 }
