@@ -5,7 +5,7 @@ use Firebase\JWT\Key;
 
 abstract class Authsignal
 {
-  const VERSION = '2.0.0';
+  const VERSION = '2.0.2';
 
   public static $apiKey;
 
@@ -129,6 +129,21 @@ abstract class Authsignal
     $userId = urlencode($userId);
     list($response, $request) = $request->send("/users/{$userId}/authenticators", $authenticator, 'post');
 
+    return $response;
+  }
+
+  /**
+   * Delete a user
+   * @param  string  $userId The userId of the user you want to delete
+   * @return Array  The authsignal response
+   */
+  public static function deleteUser(string $userId)
+  {
+    $request = new AuthsignalClient();
+    $userId = urlencode($userId);
+    $url = "/users/{$userId}";
+    list($response, $request) = $request->send($url, null, 'delete');
+    
     return $response;
   }
 
