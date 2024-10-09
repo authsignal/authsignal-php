@@ -148,6 +148,35 @@ abstract class Authsignal
   }
 
   /**
+   * Delete a user authenticator
+   * @param  string  $userId The userId of the user
+   * @param  string  $userAuthenticatorId The userAuthenticatorId of the authenticator
+   * @return Array  The authsignal response
+  */
+  public static function deleteUserAuthenticator(string $userId, string $userAuthenticatorId) {
+    if (empty($userId)) {
+        throw new InvalidArgumentException('user_id cannot be empty');
+    }
+
+    if (empty($userAuthenticatorId)) {
+        throw new InvalidArgumentException('user_authenticator_id cannot be empty');
+    }
+
+    $userId = urlencode($userId);
+    $userAuthenticatorId = urlencode($userAuthenticatorId);
+    $url = "/users/{$userId}/authenticators/{$userAuthenticatorId}";
+
+    $request = new AuthsignalClient();
+
+    try {
+        list($response, $request) = $request->send($url, null, 'delete');
+        return $response;
+    } catch (Exception $e) {
+        throw new AuthsignalApiException($e->getMessage(), $path, $e);
+    }
+  }
+
+  /**
    * Validate Challenge
    * Validates the token returned on a challenge response, this is a critical security measure
    * also performs a back-end call to validate the state
