@@ -5,7 +5,7 @@ use Firebase\JWT\Key;
 
 abstract class Authsignal
 {
-  const VERSION = '2.0.0';
+  const VERSION = '2.0.1';
 
   public static $apiKey;
 
@@ -116,6 +116,20 @@ abstract class Authsignal
 
     return $response;
   }
+
+  public static function updateUser(string $userId, array $data)
+  {
+      $request = new AuthsignalClient();
+      
+      $userId = urlencode($userId);
+  
+      $url = "/users/{$userId}";
+  
+      list($response, $request) = $request->send($url, $data, 'post');
+  
+      return $response;
+  }
+  
 
   /**
    * Enroll Authenticators

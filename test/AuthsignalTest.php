@@ -167,4 +167,22 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
 
         $this->assertEquals($response["isValid"], "true");
     }
+
+    public function testUpdateUser() {
+        $mockedResponse = array(
+            "userId" => "550e8400-e29b-41d4-a716-446655440000",
+            "email" => "updated_email",
+        );
+    
+        self::$server->setResponseOfPath("/v1/users/550e8400-e29b-41d4-a716-446655440000", new Response(json_encode($mockedResponse)));
+    
+        $data = array(
+            "email" => "updated_email",
+        );
+    
+        $response = Authsignal::updateUser("550e8400-e29b-41d4-a716-446655440000", $data);
+    
+        $this->assertEquals($response["userId"], $mockedResponse["userId"]);
+        $this->assertEquals($response["email"], $mockedResponse["email"]);
+    }
 }
