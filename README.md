@@ -9,7 +9,7 @@ Check out our [official PHP SDK documentation](https://docs.authsignal.com/sdks/
 ```php
 "require": {
     ...
-    "authsignal/authsignal-php" : "2.0.2"
+    "authsignal/authsignal-php" : "2.0.3"
     ...
 }
 ```
