@@ -198,12 +198,13 @@ abstract class Authsignal
    * @param  string  $token  The JWT token string returned on a challenge response
    * @return Array  The authsignal response
    */
-  public static function validateChallenge(string $token, ?string $userId = null)
+  public static function validateChallenge(string $token, ?string $userId = null, ?string $action = null)
   {
     $request = new AuthsignalClient();
 
     $payload = [
       'userId' => $userId,
+      'action' => $action,
       'token' => $token
     ];
 
