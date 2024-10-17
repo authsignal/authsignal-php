@@ -173,7 +173,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
               "idempotencyKey" => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
               "stateUpdatedAt" => "2022-07-25T03:19:00.316Z",
               "userId" => null,
-              "action" => "another_action",
+              "action" => "malicious_action",
               "isValid" => "false",
               "verificationMethod" => "AUTHENTICATOR_APP");
 
