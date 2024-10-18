@@ -169,16 +169,13 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
     }
 
     public function testValidateChallengeInvalidAction() {
-        $mockedResponse = array("state" => "CHALLENGE_SUCCEEDED",
-              "idempotencyKey" => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
-              "stateUpdatedAt" => "2022-07-25T03:19:00.316Z",
-              "userId" => null,
-              "action" => "malicious_action",
-              "isValid" => "false",
-              "verificationMethod" => "AUTHENTICATOR_APP");
-
-              self::$server->setResponseOfPath("/v1/validate", new Response(json_encode($mockedResponse)));
-
+        $mockedResponse = array(
+            "isValid" => false,
+            "error" => "Action is invalid."
+        );
+    
+        self::$server->setResponseOfPath("/v1/validate", new Response(json_encode($mockedResponse)));
+    
         $key = "secret";
         $testTokenPayload = [
             'iss' => 'http://example.org',
@@ -192,10 +189,11 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
             ]
         ];
         $token = JWT::encode($testTokenPayload, $key, 'HS256');
-
-        $response = Authsignal::validateChallenge(token: $token);
-
-        $this->assertEquals($response["isValid"], "false");
+    
+        $response = Authsignal::validateChallenge(token: $token, action: "malicious_action");
+    
+        $this->assertEquals($response["isValid"], false);
+        $this->assertEquals($response["error"], "Action is invalid.");
     }
 
     public function testDeleteUser() {
