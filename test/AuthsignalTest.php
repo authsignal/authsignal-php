@@ -113,7 +113,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
               "stateUpdatedAt" => "2022-07-25T03:19:00.316Z",
               "userId" => "123:test",
               "isValid" => "true",
-              "actionCode" => "signIn",
+              "action" => "signIn",
               "verificationMethod" => "AUTHENTICATOR_APP");
 
         self::$server->setResponseOfPath("/v1/validate", new Response(json_encode($mockedResponse)));
@@ -127,7 +127,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
             'other' => [
                 'userId' => "123:test",
                 'state' => "CHALLENGE_SUCCEEDED",
-                'actionCode' => 'signIn',
+                'action' => 'signIn',
                 'idempotencyKey' => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
             ]
         ];
@@ -144,7 +144,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
               "stateUpdatedAt" => "2022-07-25T03:19:00.316Z",
               "userId" => null,
               "isValid" => "true",
-              "actionCode" => "signIn",
+              "action" => "signIn",
               "verificationMethod" => "AUTHENTICATOR_APP");
 
               self::$server->setResponseOfPath("/v1/validate", new Response(json_encode($mockedResponse)));
@@ -157,7 +157,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
             'nbf' => 1357000000,
             'other' => [
                 'state' => "CHALLENGE_SUCCEEDED",
-                'actionCode' => 'signIn',
+                'action' => 'signIn',
                 'idempotencyKey' => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
             ]
         ];
@@ -166,6 +166,34 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
         $response = Authsignal::validateChallenge(token: $token);
 
         $this->assertEquals($response["isValid"], "true");
+    }
+
+    public function testValidateChallengeInvalidAction() {
+        $mockedResponse = array(
+            "isValid" => false,
+            "error" => "Action is invalid."
+        );
+    
+        self::$server->setResponseOfPath("/v1/validate", new Response(json_encode($mockedResponse)));
+    
+        $key = "secret";
+        $testTokenPayload = [
+            'iss' => 'http://example.org',
+            'aud' => 'http://example.com',
+            'iat' => 1356999524,
+            'nbf' => 1357000000,
+            'other' => [
+                'state' => "CHALLENGE_SUCCEEDED",
+                'action' => 'signIn',
+                'idempotencyKey' => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
+            ]
+        ];
+        $token = JWT::encode($testTokenPayload, $key, 'HS256');
+    
+        $response = Authsignal::validateChallenge(token: $token, action: "malicious_action");
+    
+        $this->assertEquals($response["isValid"], false);
+        $this->assertEquals($response["error"], "Action is invalid.");
     }
 
     public function testDeleteUser() {

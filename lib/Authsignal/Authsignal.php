@@ -5,7 +5,7 @@ use Firebase\JWT\Key;
 
 abstract class Authsignal
 {
-  const VERSION = '2.0.2';
+  const VERSION = '2.0.3';
 
   public static $apiKey;
 
@@ -198,14 +198,19 @@ abstract class Authsignal
    * @param  string  $token  The JWT token string returned on a challenge response
    * @return Array  The authsignal response
    */
-  public static function validateChallenge(string $token, ?string $userId = null)
+  public static function validateChallenge(string $token, ?string $userId = null, ?string $action = null)
   {
     $request = new AuthsignalClient();
 
     $payload = [
       'userId' => $userId,
+      'action' => $action,
       'token' => $token
     ];
+
+    $payload = array_filter($payload, function($value) {
+      return $value !== null;
+    });
 
     list($response, $request) = $request->send("/validate", $payload, 'post');
     
