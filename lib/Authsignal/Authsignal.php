@@ -161,7 +161,7 @@ abstract class Authsignal
    * @param  string  $userAuthenticatorId The userAuthenticatorId of the authenticator
    * @return Array  The authsignal response
   */
-  public static function deleteUserAuthenticator(string $userId, string $userAuthenticatorId) {
+  public static function deleteAuthenticator(string $userId, string $userAuthenticatorId) {
     if (empty($userId)) {
         throw new InvalidArgumentException('user_id cannot be empty');
     }

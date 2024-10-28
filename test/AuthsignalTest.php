@@ -206,12 +206,12 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
         $this->assertEquals($response["success"], true);
     }
 
-    public function testDeleteUserAuthenticator() {
+    public function testDeleteAuthenticator() {
         $mockedResponse = array("success" => true);
     
         self::$server->setResponseOfPath("/v1/users/123%3Atest/authenticators/456%3Atest", new Response(json_encode($mockedResponse), [], 200));
     
-        $response = Authsignal::deleteUserAuthenticator("123:test", "456:test");
+        $response = Authsignal::deleteAuthenticator("123:test", "456:test");
     
         $this->assertArrayHasKey("success", $response);
         $this->assertEquals($response["success"], true);
