@@ -63,7 +63,6 @@ abstract class Authsignal
     self::$apiVersion = $apiVersion;
   }
 
-
   /**
    * Track an action
    * @param  string  $userId The userId of the user you are tracking the action for
@@ -120,13 +119,9 @@ abstract class Authsignal
   public static function updateUser(string $userId, array $data)
   {
       $request = new AuthsignalClient();
-      
       $userId = urlencode($userId);
-  
-      $url = "/users/{$userId}";
-  
-      list($response, $request) = $request->send($url, $data, 'post');
-  
+      $path = "/users/{$userId}";
+      list($response, $request) = $request->send($path, $data, 'post');
       return $response;
   }
   
@@ -155,9 +150,8 @@ abstract class Authsignal
   {
     $request = new AuthsignalClient();
     $userId = urlencode($userId);
-    $url = "/users/{$userId}";
-    list($response, $request) = $request->send($url, null, 'delete');
-    
+    $path = "/users/{$userId}";
+    list($response, $request) = $request->send($path, null, 'delete');
     return $response;
   }
 
@@ -178,12 +172,12 @@ abstract class Authsignal
 
     $userId = urlencode($userId);
     $userAuthenticatorId = urlencode($userAuthenticatorId);
-    $url = "/users/{$userId}/authenticators/{$userAuthenticatorId}";
+    $path = "/users/{$userId}/authenticators/{$userAuthenticatorId}";
 
     $request = new AuthsignalClient();
 
     try {
-        list($response, $request) = $request->send($url, null, 'delete');
+        list($response, $request) = $request->send($path, null, 'delete');
         return $response;
     } catch (Exception $e) {
         throw new AuthsignalApiException($e->getMessage(), $path, $e);

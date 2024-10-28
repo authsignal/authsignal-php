@@ -2,7 +2,7 @@
 
 class AuthsignalClient
 {
-  public static function apiUrl($url='')
+  public static function apiUrl($path='')
   {
     $apiEndpoint = getenv('AUTHSIGNAL_SERVER_API_ENDPOINT');
     if ( !$apiEndpoint ) {
@@ -10,7 +10,7 @@ class AuthsignalClient
       $apiVersion = Authsignal::getApiVersion();
       $apiEndpoint = $apiBase.'/'.$apiVersion;
     }
-    return $apiEndpoint.$url;
+    return $apiEndpoint.$path;
   }
 
   public function handleApiError($response, $status)
@@ -70,12 +70,18 @@ class AuthsignalClient
     }
   }
 
-  public function send($url, $payload, $method = 'post')
+  public function send($path, $payload = null, $method = 'post', $filterNullValues = true)
   {
+    if ($filterNullValues && is_array($payload)) {
+      $payload = array_filter($payload, function($value) {
+        return $value !== null;
+      });
+    }
+
     $this->preCheck();
 
     $request = new AuthsignalRequestTransport();
-    $request->send($method, self::apiUrl($url), $payload);
+    $request->send($method, self::apiUrl($path), $payload);
 
     return $this->handleResponse($request);
   }
