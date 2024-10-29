@@ -204,6 +204,10 @@ abstract class Authsignal
 
     list($response, $request) = $request->send("/validate", $payload, 'post');
     
+    if (isset($response['actionCode'])) {
+        unset($response['actionCode']);
+    }
+    
     return $response;
   }
 }
