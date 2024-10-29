@@ -55,7 +55,7 @@ class AuthsignalClient
       throw new AuthsignalApiError('Invalid response from API', 'api_error', $request->rStatus);
     }
 
-    if ($request->rStatus < 200 || $request->rStatus >= 300) {
+    if ($request->rStatus < 200 || $request->rStatus >= 400) {
       $this->handleApiError($response, $request->rStatus);
     }
 
