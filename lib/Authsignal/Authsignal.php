@@ -5,7 +5,7 @@ use Firebase\JWT\Key;
 
 abstract class Authsignal
 {
-  const VERSION = '3.0.0';
+  const VERSION = '3.0.1';
 
   public static $apiKey;
 
