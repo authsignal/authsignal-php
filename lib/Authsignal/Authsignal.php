@@ -202,10 +202,6 @@ abstract class Authsignal
       'token' => $token
     ];
 
-    $payload = array_filter($payload, function($value) {
-      return $value !== null;
-    });
-
     list($response, $request) = $request->send("/validate", $payload, 'post');
     
     return $response;
