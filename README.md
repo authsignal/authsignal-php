@@ -4,18 +4,14 @@ Check out our [official PHP SDK documentation](https://docs.authsignal.com/sdks/
 
 ## Installation
 
-1. Add Authsignal's library as a depependency in composer.json
+1. Add Authsignal's library to your project using Composer:
 
-```php
-"require": {
-    ...
-    "authsignal/authsignal-php" : "3.0.0"
-    ...
-}
-```
+   ```bash
+   composer require authsignal/authsignal-php
+   ```
 
-2. Run composer update.
-3. Now Authsignal will be autoloaded into your project.
+2. Run `composer update` to install the dependencies.
+3. Authsignal will now be autoloaded into your project.
 
 ## Initialization
 
