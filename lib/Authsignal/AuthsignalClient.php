@@ -6,9 +6,9 @@ class AuthsignalClient
   {
     $apiEndpoint = getenv('AUTHSIGNAL_SERVER_API_ENDPOINT');
     if ( !$apiEndpoint ) {
-      $apiBase    = Authsignal::$apiHostname;
+      $apiURL    = Authsignal::$apiHostname;
       $apiVersion = Authsignal::getApiVersion();
-      $apiEndpoint = $apiBase.'/'.$apiVersion;
+      $apiEndpoint = $apiURL.'/'.$apiVersion;
     }
     return $apiEndpoint.$path;
   }

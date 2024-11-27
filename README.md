@@ -41,7 +41,7 @@ An example setting the client to use the AU region.
 Authsignal::setApiHostname("https://au.signal.authsignal.com");
 ```
 
-Alternatively, an environment variable can be used to set the base URL:
+Alternatively, an environment variable can be used to set the API URL:
 
 ```bash
 AUTHSIGNAL_SERVER_API_ENDPOINT=https://au.signal.authsignal.com/v1
