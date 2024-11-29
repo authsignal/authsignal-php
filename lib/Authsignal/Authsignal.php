@@ -237,4 +237,21 @@ abstract class Authsignal
     return $response;
   }
 
+  /**
+   * Get Authenticators
+   * @param array $params An associative array of parameters:
+   *                      - string 'userId': The userId of the user whose authenticators you want to retrieve
+   * @return array The list of user authenticators
+   * @throws AuthsignalApiException if the request fails
+   */
+  public static function getAuthenticators(array $params)
+  {
+    $request = new AuthsignalClient();
+    $userId = urlencode($params['userId']);
+    $path = "/users/{$userId}/authenticators";
+    
+    list($response, $request) = $request->send($path, null, 'get');
+    return $response; 
+  }
+
 }
