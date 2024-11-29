@@ -106,16 +106,14 @@ abstract class Authsignal
    * Get a user
    * @param array $params An associative array of parameters:
    *                      - string 'userId': The userId of the user you are tracking the action for
-   *                      - string|null 'redirectUrl': The redirectUrl if using the redirect flow (optional)
    * @return Array  The authsignal response
    */
   public static function getUser(array $params)
   {
     $request = new AuthsignalClient();
     $userId = urlencode($params['userId']);
-    $redirectUrl = isset($params['redirectUrl']) ? urlencode($params['redirectUrl']) : null;
 
-    $path = empty($redirectUrl) ? "/users/{$userId}" : "/users/{$userId}?redirectUrl={$redirectUrl}";
+    $path = "/users/{$userId}";
     list($response, $request) = $request->send($path, null, 'get');
 
     return $response;
