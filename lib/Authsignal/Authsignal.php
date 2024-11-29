@@ -123,9 +123,9 @@ abstract class Authsignal
   {
       $request = new AuthsignalClient();
       $userId = urlencode($params['userId']);
-      $data = $params['data'];
+      $attributes = $params['attributes'];
       $path = "/users/{$userId}";
-      list($response, $request) = $request->send($path, $data, 'post');
+      list($response, $request) = $request->send($path, $attributes, 'post');
       return $response;
   }
   
