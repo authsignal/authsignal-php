@@ -210,4 +210,23 @@ abstract class Authsignal
     
     return $response;
   }
+
+  /**
+   * Update Action
+   * Updates the state of an action for a user
+   * @param  string  $userId The userId of the user to update the action for
+   * @param  string  $action The action code to update
+   * @param  string  $idempotencyKey The idempotency key for the action
+   * @param  array   $attributes Additional attributes for the action
+   * @return array   The Authsignal response
+   */
+  public static function updateAction(string $userId, string $action, string $idempotencyKey, array $attributes)
+  {
+    $request = new AuthsignalClient();
+    $path = "/users/" . urlencode($userId) . "/actions/" . urlencode($action) . "/" . urlencode($idempotencyKey);
+
+    list($response, $request) = $request->send($path, $attributes, 'patch');
+    return $response;
+  }
+
 }

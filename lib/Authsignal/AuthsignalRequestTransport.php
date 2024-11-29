@@ -50,6 +50,9 @@ class AuthsignalRequestTransport
       case 'put':
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
         break;
+      case 'patch':
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PATCH");
+        break;
       case 'delete':
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
         break;
