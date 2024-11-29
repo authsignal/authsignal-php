@@ -302,4 +302,29 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
         $this->assertEquals($response[0]["userAuthenticatorId"], $mockedResponse[0]["userAuthenticatorId"]);
         $this->assertEquals($response[1]["userAuthenticatorId"], $mockedResponse[1]["userAuthenticatorId"]);
     }
+
+    public function testUpdateAction() {
+        $mockedResponse = array(
+            "userId" => "123:test",
+            "action" => "signIn",
+            "idempotencyKey" => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
+            "state" => "CHALLENGE_FAILED"
+        );
+
+        self::$server->setResponseOfPath("/v1/users/123%3Atest/actions/signIn/5924a649-b5d3-4baf-a4ab-4b812dde97a0", new Response(json_encode($mockedResponse)));
+
+        $params = array(
+            "userId" => "123:test",
+            "action" => "signIn",
+            "idempotencyKey" => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
+            "attributes" => array("state" => "CHALLENGE_FAILED")
+        );
+
+        $response = Authsignal::updateAction($params);
+
+        $this->assertEquals($response["userId"], $mockedResponse["userId"]);
+        $this->assertEquals($response["action"], $mockedResponse["action"]);
+        $this->assertEquals($response["idempotencyKey"], $mockedResponse["idempotencyKey"]);
+        $this->assertEquals($response["state"], $mockedResponse["state"]);
+    }
 }
