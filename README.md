@@ -53,6 +53,21 @@ Authsignal's server side signal API has five main calls `track`, `getAction`, `g
 
 For more details on these api calls, refer to our [official PHP SDK docs](https://docs.authsignal.com/sdks/server/php#trackaction).
 
+### Response & Error handling
+
+Example:
+
+```php
+$result = Authsignal::updateAction(
+   userId: $userId,
+   action: $action,
+   idempotencyKey: "invalidKey",
+   attributes: ['state' => 'CHALLENGE_FAILED']
+);
+
+# PHP Fatal error: Uncaught AuthsignalNotFoundError: 404 - not_found
+```
+
 ## License
 
 The library is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).

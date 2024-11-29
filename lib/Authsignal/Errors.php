@@ -2,7 +2,21 @@
 
 class AuthsignalError extends Exception
 {
+    public function __construct($statusCode, $errorCode, $errorDescription = null, $previous = null)
+    {
+        $message = $this->formatMessage($statusCode, $errorCode, $errorDescription);
+        parent::__construct($message, $statusCode, $previous);
+    }
 
+    private function formatMessage($statusCode, $errorCode, $errorDescription = null)
+    {
+        return "$statusCode - " . $this->formatDescription($errorCode, $errorDescription);
+    }
+
+    private function formatDescription($errorCode, $errorDescription = null)
+    {
+        return $errorDescription && strlen($errorDescription) > 0 ? $errorDescription : $errorCode;
+    }
 }
 
 class AuthsignalRequestError extends AuthsignalError
@@ -22,12 +36,7 @@ class AuthsignalCurlOptionError extends AuthsignalError
 
 class AuthsignalApiError extends AuthsignalError
 {
-  public function __construct($msg, $type = null, $status = null)
-  {
-    parent::__construct($msg);
-    $this->type = $type;
-    $this->httpStatus = $status;
-  }
+
 }
 
 class AuthsignalBadRequest extends AuthsignalApiError
