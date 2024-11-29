@@ -85,16 +85,18 @@ abstract class Authsignal
 
   /**
    * Get an action
-   * @param  string  $userId The userId of the user you are tracking the action for
-   * @param  string  $action The action code that you are tracking
-   * @param  string  $idempotencyKey The action code that you are tracking
+   * @param array $params An associative array of parameters:
+   *                      - string 'userId': The userId of the user you are tracking the action for
+   *                      - string 'action': The action code that you are tracking
+   *                      - string 'idempotencyKey': The idempotency key for the action
    * @return Array  The authsignal response
    */
-  public static function getAction(string $userId, string $action, string $idempotencyKey)
+  public static function getAction(array $params)
   {
     $request = new AuthsignalClient();
-    $userId = urlencode($userId);
-    $action = urlencode($action);
+    $userId = urlencode($params['userId']);
+    $action = urlencode($params['action']);
+    $idempotencyKey = urlencode($params['idempotencyKey']);
     list($response, $request) = $request->send("/users/{$userId}/actions/{$action}/{$idempotencyKey}", array(), 'get');
 
     return $response;
@@ -102,27 +104,28 @@ abstract class Authsignal
 
   /**
    * Get a user
-   * @param  string  $userId The userId of the user you are tracking the action for
-   * @param  string  $redirectUrl The redirectUrl if using the redirect flow (optional)
+   * @param array $params An associative array of parameters:
+   *                      - string 'userId': The userId of the user you are tracking the action for
+   *                      - string|null 'redirectUrl': The redirectUrl if using the redirect flow (optional)
    * @return Array  The authsignal response
    */
-  public static function getUser(string $userId, string $redirectUrl = null)
+  public static function getUser(array $params)
   {
     $request = new AuthsignalClient();
-    $userId = urlencode($userId);
+    $userId = urlencode($params['userId']);
+    $redirectUrl = isset($params['redirectUrl']) ? urlencode($params['redirectUrl']) : null;
 
-    $redirectUrl = empty($redirectUrl) ? null : urlencode($redirectUrl);
-  
     $path = empty($redirectUrl) ? "/users/{$userId}" : "/users/{$userId}?redirectUrl={$redirectUrl}";
     list($response, $request) = $request->send($path, null, 'get');
 
     return $response;
   }
 
-  public static function updateUser(string $userId, array $data)
+  public static function updateUser(array $params)
   {
       $request = new AuthsignalClient();
-      $userId = urlencode($userId);
+      $userId = urlencode($params['userId']);
+      $data = $params['data'];
       $path = "/users/{$userId}";
       list($response, $request) = $request->send($path, $data, 'post');
       return $response;
@@ -131,14 +134,16 @@ abstract class Authsignal
 
   /**
    * Enroll Authenticators
-   * @param  string  $userId The userId of the user you are tracking the action for
-   * @param  Array   $authenticator The authenticator object
+   * @param array $params An associative array of parameters:
+   *                      - string 'userId': The userId of the user you are tracking the action for
+   *                      - array 'authenticator': The authenticator object
    * @return Array  The authsignal response
    */
-  public static function enrollVerifiedAuthenticator(string $userId, Array $authenticator)
+  public static function enrollVerifiedAuthenticator(array $params)
   {
     $request = new AuthsignalClient();
-    $userId = urlencode($userId);
+    $userId = urlencode($params['userId']);
+    $authenticator = $params['authenticator'];
     list($response, $request) = $request->send("/users/{$userId}/authenticators", $authenticator, 'post');
 
     return $response;
@@ -146,13 +151,14 @@ abstract class Authsignal
 
   /**
    * Delete a user
-   * @param  string  $userId The userId of the user you want to delete
+   * @param array $params An associative array of parameters:
+   *                      - string 'userId': The userId of the user you want to delete
    * @return Array  The authsignal response
    */
-  public static function deleteUser(string $userId)
+  public static function deleteUser(array $params)
   {
     $request = new AuthsignalClient();
-    $userId = urlencode($userId);
+    $userId = urlencode($params['userId']);
     $path = "/users/{$userId}";
     list($response, $request) = $request->send($path, null, 'delete');
     return $response;
@@ -160,21 +166,22 @@ abstract class Authsignal
 
   /**
    * Delete a user authenticator
-   * @param  string  $userId The userId of the user
-   * @param  string  $userAuthenticatorId The userAuthenticatorId of the authenticator
+   * @param array $params An associative array of parameters:
+   *                      - string 'userId': The userId of the user
+   *                      - string 'userAuthenticatorId': The userAuthenticatorId of the authenticator
    * @return Array  The authsignal response
-  */
-  public static function deleteAuthenticator(string $userId, string $userAuthenticatorId) {
-    if (empty($userId)) {
+   */
+  public static function deleteAuthenticator(array $params) {
+    if (empty($params['userId'])) {
         throw new InvalidArgumentException('user_id cannot be empty');
     }
 
-    if (empty($userAuthenticatorId)) {
+    if (empty($params['userAuthenticatorId'])) {
         throw new InvalidArgumentException('user_authenticator_id cannot be empty');
     }
 
-    $userId = urlencode($userId);
-    $userAuthenticatorId = urlencode($userAuthenticatorId);
+    $userId = urlencode($params['userId']);
+    $userAuthenticatorId = urlencode($params['userAuthenticatorId']);
     $path = "/users/{$userId}/authenticators/{$userAuthenticatorId}";
 
     $request = new AuthsignalClient();
@@ -189,20 +196,20 @@ abstract class Authsignal
 
   /**
    * Validate Challenge
-   * Validates the token returned on a challenge response, this is a critical security measure
-   * also performs a back-end call to validate the state
-   * @param  string|null  $userId The userId of the user you are tracking the action for
-   * @param  string  $token  The JWT token string returned on a challenge response
+   * @param array $params An associative array of parameters:
+   *                      - string 'token': The JWT token string returned on a challenge response
+   *                      - string|null 'userId': The userId of the user you are tracking the action for (optional)
+   *                      - string|null 'action': The action code that you are tracking (optional)
    * @return Array  The authsignal response
    */
-  public static function validateChallenge(string $token, ?string $userId = null, ?string $action = null)
+  public static function validateChallenge(array $params)
   {
     $request = new AuthsignalClient();
 
     $payload = [
-      'userId' => $userId,
-      'action' => $action,
-      'token' => $token
+      'userId' => $params['userId'] ?? null,
+      'action' => $params['action'] ?? null,
+      'token' => $params['token']
     ];
 
     list($response, $request) = $request->send("/validate", $payload, 'post');
@@ -216,19 +223,19 @@ abstract class Authsignal
 
   /**
    * Update Action
-   * Updates the state of an action for a user
-   * @param  string  $userId The userId of the user to update the action for
-   * @param  string  $action The action code to update
-   * @param  string  $idempotencyKey The idempotency key for the action
-   * @param  array   $attributes Additional attributes for the action
+   * @param array $params An associative array of parameters:
+   *                      - string 'userId': The userId of the user to update the action for
+   *                      - string 'action': The action code to update
+   *                      - string 'idempotencyKey': The idempotency key for the action
+   *                      - array 'attributes': Additional attributes for the action
    * @return array   The Authsignal response
    */
-  public static function updateAction(string $userId, string $action, string $idempotencyKey, array $attributes)
+  public static function updateAction(array $params)
   {
     $request = new AuthsignalClient();
-    $path = "/users/" . urlencode($userId) . "/actions/" . urlencode($action) . "/" . urlencode($idempotencyKey);
+    $path = "/users/" . urlencode($params['userId']) . "/actions/" . urlencode($params['action']) . "/" . urlencode($params['idempotencyKey']);
 
-    list($response, $request) = $request->send($path, $attributes, 'patch');
+    list($response, $request) = $request->send($path, $params['attributes'], 'patch');
     return $response;
   }
 
