@@ -93,7 +93,7 @@ abstract class Authsignal
       $userId = urlencode($params['userId']);
       $attributes = $params['attributes'];
       $path = "/users/{$userId}";
-      list($response, $request) = $request->send($path, $attributes, 'post');
+      list($response, $request) = $request->send($path, $attributes, 'patch');
       return $response;
   }
 
