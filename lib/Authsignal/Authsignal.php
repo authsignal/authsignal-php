@@ -119,6 +119,13 @@ abstract class Authsignal
     return $response;
   }
 
+  /**
+   * Update User
+   * @param array $params An associative array of parameters:
+   *                      - string 'userId': The userId of the user to update
+   *                      - array 'attributes': The attributes to update for the user
+   * @return array The authsignal response
+   */
   public static function updateUser(array $params)
   {
       $request = new AuthsignalClient();
