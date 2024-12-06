@@ -184,7 +184,7 @@ abstract class Authsignal
    * @param array $params An associative array of parameters:
    *                      - string 'userId': The userId of the user you are tracking the action for
    *                      - string 'action': The action code that you are tracking
-   *                      - array 'attributes': An array of attributes to track
+   *                      - array 'attributes': An array of attributes to track (optional)
    * @return array The authsignal response
    */
   public static function track(array $params)
@@ -192,8 +192,11 @@ abstract class Authsignal
     $request = new AuthsignalClient();
     $userId = urlencode($params['userId']);
     $action = urlencode($params['action']);
-    $attributes = $params['attributes'];
-    list($response, $request) = $request->send("/users/{$userId}/actions/{$action}", $attributes, 'post');
+    $attributes = isset($params['attributes']) ? $params['attributes'] : [];
+    
+    $requestBody = ['attributes' => $attributes];
+    
+    list($response, $request) = $request->send("/users/{$userId}/actions/{$action}", $requestBody, 'post');
     
     return $response;
   }
