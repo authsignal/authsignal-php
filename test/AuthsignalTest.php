@@ -116,7 +116,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
 
         $params = array(
             "userId" => "123:test",
-            "authenticator" => array(
+            "attributes" => array(
                 "oobChannel" => "SMS",
                 "phoneNumber" => "+6427000000"
             )
