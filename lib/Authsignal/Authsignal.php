@@ -135,15 +135,15 @@ abstract class Authsignal
    * Enroll Authenticators
    * @param array $params An associative array of parameters:
    *                      - string 'userId': The userId of the user you are tracking the action for
-   *                      - array 'authenticator': The authenticator object
+   *                      - array 'attributes': The authenticator object
    * @return Array  The authsignal response
    */
   public static function enrollVerifiedAuthenticator(array $params)
   {
     $request = new AuthsignalClient();
     $userId = urlencode($params['userId']);
-    $authenticator = $params['authenticator'];
-    list($response, $request) = $request->send("/users/{$userId}/authenticators", $authenticator, 'post');
+    $attributes = $params['attributes'];
+    list($response, $request) = $request->send("/users/{$userId}/authenticators", $attributes, 'post');
 
     return $response;
   }
