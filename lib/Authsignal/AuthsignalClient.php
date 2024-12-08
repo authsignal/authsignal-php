@@ -2,15 +2,10 @@
 
 class AuthsignalClient
 {
-  public static function apiUrl($path='')
+  public static function apiUrl($path = '')
   {
-    $apiEndpoint = getenv('AUTHSIGNAL_SERVER_API_ENDPOINT');
-    if ( !$apiEndpoint ) {
-      $apiURL    = Authsignal::$apiUrl;
-      $apiVersion = Authsignal::getApiVersion();
-      $apiEndpoint = $apiURL.'/'.$apiVersion;
-    }
-    return $apiEndpoint.$path;
+    $apiEndpoint = getenv('AUTHSIGNAL_API_URL') ?: Authsignal::$apiUrl;
+    return $apiEndpoint . $path;
   }
 
   public function handleApiError($response, $statusCode)

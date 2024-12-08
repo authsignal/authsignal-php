@@ -11,8 +11,6 @@ abstract class Authsignal
 
   public static $apiUrl = 'https://signal.authsignal.com';
 
-  public static $apiVersion = 'v1';
-
   private static $curlOpts = array();
   private static $validCurlOpts = array(CURLOPT_CONNECTTIMEOUT,
                                         CURLOPT_CONNECTTIMEOUT_MS,
@@ -51,16 +49,6 @@ abstract class Authsignal
   public static function getCurlOpts()
   {
     return self::$curlOpts;
-  }
-
-  public static function getApiVersion()
-  {
-    return self::$apiVersion;
-  }
-
-  public static function setApiVersion($apiVersion)
-  {
-    self::$apiVersion = $apiVersion;
   }
 
   /**

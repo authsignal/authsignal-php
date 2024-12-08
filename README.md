@@ -38,13 +38,13 @@ You can set the hostname via the following code. If the `setApiUrl` function is 
 An example setting the client to use the AU region.
 
 ```php
-Authsignal::setApiUrl("https://au.signal.authsignal.com");
+Authsignal::setApiUrl("https://au.signal.authsignal.com/v1");
 ```
 
 Alternatively, an environment variable can be used to set the API URL:
 
 ```bash
-AUTHSIGNAL_SERVER_API_ENDPOINT=https://au.signal.authsignal.com/v1
+AUTHSIGNAL_API_URL=https://au.signal.authsignal.com/v1
 ```
 
 ## Usage
