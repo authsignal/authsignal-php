@@ -9,7 +9,7 @@ abstract class Authsignal
 
   public static $apiSecretKey;
 
-  public static $apiHostname = 'https://signal.authsignal.com';
+  public static $apiUrl = 'https://signal.authsignal.com';
 
   public static $apiVersion = 'v1';
 
@@ -29,9 +29,9 @@ abstract class Authsignal
     self::$apiSecretKey = $apiSecretKey;
   }
 
-  public static function setApiHostname($hostname)
+  public static function setApiUrl($apiUrl)
   {
-    self::$apiHostname = $hostname;
+    self::$apiUrl = $apiUrl;
   }
 
   public static function setCurlOpts($curlOpts)

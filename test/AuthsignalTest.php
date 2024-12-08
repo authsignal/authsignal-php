@@ -15,7 +15,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
         self::$server = new MockWebServer;
         self::$server->start();
 
-        Authsignal::setApiHostname(self::$server->getServerRoot());
+        Authsignal::setApiUrl(self::$server->getServerRoot());
     }
 
     static function tearDownAfterClass(): void {

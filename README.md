@@ -33,12 +33,12 @@ Authsignal has multiple api hosting regions. To view your hostname for your tena
 | AU (Sydney) | https://au.signal.authsignal.com/v1 |
 | EU (Dublin) | https://eu.signal.authsignal.com/v1 |
 
-You can set the hostname via the following code. If the `setApiHostname` function is not called, the api call defaults to the main Authsignal US region hostname `https://signal.authsignal.com`
+You can set the hostname via the following code. If the `setApiUrl` function is not called, the api call defaults to the main Authsignal US region hostname `https://signal.authsignal.com`
 
 An example setting the client to use the AU region.
 
 ```php
-Authsignal::setApiHostname("https://au.signal.authsignal.com");
+Authsignal::setApiUrl("https://au.signal.authsignal.com");
 ```
 
 Alternatively, an environment variable can be used to set the API URL:
