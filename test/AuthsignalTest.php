@@ -27,7 +27,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
               "accessToken" => "xxxx",
               "url" => "wwwww");
 
-        self::$server->setResponseOfPath("/v1/users/123%3Atest", new Response(json_encode($mockedResponse)));
+        self::$server->setResponseOfPath("/users/123%3Atest", new Response(json_encode($mockedResponse)));
 
         $params = array(
             "userId" => "123:test",
@@ -46,7 +46,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
             "email" => "updated_email",
         );
     
-        self::$server->setResponseOfPath("/v1/users/550e8400-e29b-41d4-a716-446655440000", new Response(json_encode($mockedResponse)));
+        self::$server->setResponseOfPath("/users/550e8400-e29b-41d4-a716-446655440000", new Response(json_encode($mockedResponse)));
     
         $params = array(
             "userId" => "550e8400-e29b-41d4-a716-446655440000",
@@ -64,7 +64,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
     public function testDeleteUser() {
         $mockedResponse = array("success" => true);
     
-        self::$server->setResponseOfPath("/v1/users/1234", new Response(json_encode($mockedResponse), [], 200));
+        self::$server->setResponseOfPath("/users/1234", new Response(json_encode($mockedResponse), [], 200));
     
         $params = array("userId" => "1234");
         $response = Authsignal::deleteUser($params);
@@ -88,7 +88,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
             )
         );
 
-        self::$server->setResponseOfPath("/v1/users/123%3Atest/authenticators", new Response(json_encode($mockedResponse)));
+        self::$server->setResponseOfPath("/users/123%3Atest/authenticators", new Response(json_encode($mockedResponse)));
 
         $params = array(
             "userId" => "123:test"
@@ -112,7 +112,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
                 "createdAt"=> "2022-07-25T03:31:36.219Z",
                 "oobChannel"=> "SMS"));
 
-        self::$server->setResponseOfPath("/v1/users/123%3Atest/authenticators", new Response(json_encode($mockedResponse)));
+        self::$server->setResponseOfPath("/users/123%3Atest/authenticators", new Response(json_encode($mockedResponse)));
 
         $params = array(
             "userId" => "123:test",
@@ -130,7 +130,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
     public function testDeleteAuthenticator() {
         $mockedResponse = array("success" => true);
     
-        self::$server->setResponseOfPath("/v1/users/123%3Atest/authenticators/456%3Atest", new Response(json_encode($mockedResponse), [], 200));
+        self::$server->setResponseOfPath("/users/123%3Atest/authenticators/456%3Atest", new Response(json_encode($mockedResponse), [], 200));
     
         $params = array(
             "userId" => "123:test",
@@ -148,7 +148,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
               "idempotencyKey" => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
               "ruleIds" => []);
 
-        self::$server->setResponseOfPath('/v1/users/123%3Atest/actions/signIn', new Response(json_encode($mockedResponse)));
+        self::$server->setResponseOfPath('/users/123%3Atest/actions/signIn', new Response(json_encode($mockedResponse)));
 
         $params = array(
             "userId" => "123:test",
@@ -182,7 +182,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
               "action" => "signIn",
               "verificationMethod" => "AUTHENTICATOR_APP");
 
-        self::$server->setResponseOfPath("/v1/validate", new Response(json_encode($mockedResponse)));
+        self::$server->setResponseOfPath("/validate", new Response(json_encode($mockedResponse)));
 
         $key = "secret";
         $testTokenPayload = [
@@ -217,7 +217,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
               "createdAt" => "2022-07-25T03:19:00.316Z",
               "ruleIds" => []);
 
-        self::$server->setResponseOfPath("/v1/users/123%3Atest/actions/signIn/5924a649-b5d3-4baf-a4ab-4b812dde97a04", new Response(json_encode($mockedResponse)));
+        self::$server->setResponseOfPath("/users/123%3Atest/actions/signIn/5924a649-b5d3-4baf-a4ab-4b812dde97a04", new Response(json_encode($mockedResponse)));
 
         $params = array(
             "userId" => "123:test",
@@ -240,7 +240,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
             "state" => "CHALLENGE_FAILED"
         );
 
-        self::$server->setResponseOfPath("/v1/users/123%3Atest/actions/signIn/5924a649-b5d3-4baf-a4ab-4b812dde97a0", new Response(json_encode($mockedResponse)));
+        self::$server->setResponseOfPath("/users/123%3Atest/actions/signIn/5924a649-b5d3-4baf-a4ab-4b812dde97a0", new Response(json_encode($mockedResponse)));
 
         $params = array(
             "userId" => "123:test",
