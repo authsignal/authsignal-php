@@ -69,7 +69,7 @@ class AuthsignalRequestTransport
 
     // Set our default options.
     $curlOptions[CURLOPT_URL] = $url;
-    $curlOptions[CURLOPT_USERPWD] =  Authsignal::getApiKey() . ":";
+    $curlOptions[CURLOPT_USERPWD] =  Authsignal::getApiSecretKey() . ":";
     $curlOptions[CURLOPT_RETURNTRANSFER] = true;
     $curlOptions[CURLOPT_CONNECTTIMEOUT] = 3;
     $curlOptions[CURLOPT_TIMEOUT] = 10;

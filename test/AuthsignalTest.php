@@ -11,7 +11,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
     protected static $server;
 
     public static function setUpBeforeClass(): void {
-        Authsignal::setApiKey('secret');
+        Authsignal::setApiSecretKey('secret');
         self::$server = new MockWebServer;
         self::$server->start();
 

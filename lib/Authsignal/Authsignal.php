@@ -7,7 +7,7 @@ abstract class Authsignal
 {
   const VERSION = '3.0.1';
 
-  public static $apiKey;
+  public static $apiSecretKey;
 
   public static $apiHostname = 'https://signal.authsignal.com';
 
@@ -19,14 +19,14 @@ abstract class Authsignal
                                         CURLOPT_TIMEOUT,
                                         CURLOPT_TIMEOUT_MS);
 
-  public static function getApiKey()
+  public static function getApiSecretKey()
   {
-    return self::$apiKey;
+    return self::$apiSecretKey;
   }
 
-  public static function setApiKey($apiKey)
+  public static function setApiSecretKey($apiSecretKey)
   {
-    self::$apiKey = $apiKey;
+    self::$apiSecretKey = $apiSecretKey;
   }
 
   public static function setApiHostname($hostname)

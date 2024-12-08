@@ -68,7 +68,7 @@ class AuthsignalClient
 
   public function preCheck()
   {
-    $key = Authsignal::getApiKey();
+    $key = Authsignal::getApiSecretKey();
     if (empty($key)) {
       throw new AuthsignalConfigurationError();
     }

@@ -18,7 +18,7 @@ Check out our [official PHP SDK documentation](https://docs.authsignal.com/sdks/
 Initialize the Authsignal SDK, ensuring you do not hard code the Authsignal Secret Key, always keep this safe.
 
 ```php
-Authsignal::setApiKey('secretKey');
+Authsignal::setApiSecretKey('secretKey');
 ```
 
 You can find your `secretKey` in the [Authsignal Portal](https://portal.authsignal.com/organisations/tenants/api).
