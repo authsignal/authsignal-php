@@ -18,7 +18,7 @@ Check out our [official PHP SDK documentation](https://docs.authsignal.com/sdks/
 Initialize the Authsignal SDK, ensuring you do not hard code the Authsignal Secret Key, always keep this safe.
 
 ```php
-Authsignal::setApiKey('secretKey');
+Authsignal::setApiSecretKey('secretKey');
 ```
 
 You can find your `secretKey` in the [Authsignal Portal](https://portal.authsignal.com/organisations/tenants/api).
@@ -33,18 +33,18 @@ Authsignal has multiple api hosting regions. To view your hostname for your tena
 | AU (Sydney) | https://au.signal.authsignal.com/v1 |
 | EU (Dublin) | https://eu.signal.authsignal.com/v1 |
 
-You can set the hostname via the following code. If the `setApiHostname` function is not called, the api call defaults to the main Authsignal US region hostname `https://signal.authsignal.com`
+You can set the hostname via the following code. If the `setApiUrl` function is not called, the api call defaults to the main Authsignal US region hostname `https://signal.authsignal.com`
 
 An example setting the client to use the AU region.
 
 ```php
-Authsignal::setApiHostname("https://au.signal.authsignal.com");
+Authsignal::setApiUrl("https://au.signal.authsignal.com/v1");
 ```
 
-Alternatively, an environment variable can be used to set the base URL:
+Alternatively, an environment variable can be used to set the API URL:
 
 ```bash
-AUTHSIGNAL_SERVER_API_ENDPOINT=https://au.signal.authsignal.com/v1
+AUTHSIGNAL_API_URL=https://au.signal.authsignal.com/v1
 ```
 
 ## Usage
@@ -52,6 +52,21 @@ AUTHSIGNAL_SERVER_API_ENDPOINT=https://au.signal.authsignal.com/v1
 Authsignal's server side signal API has five main calls `track`, `getAction`, `getUser`, `enrollVerifiedAuthenticator`, `verifyChallenge`
 
 For more details on these api calls, refer to our [official PHP SDK docs](https://docs.authsignal.com/sdks/server/php#trackaction).
+
+### Response & Error handling
+
+Example:
+
+```php
+$result = Authsignal::updateAction(
+   userId: $userId,
+   action: $action,
+   idempotencyKey: "invalidKey",
+   attributes: ['state' => 'CHALLENGE_FAILED']
+);
+
+# PHP Fatal error: Uncaught AuthsignalNotFoundError: 404 - not_found
+```
 
 ## License
 

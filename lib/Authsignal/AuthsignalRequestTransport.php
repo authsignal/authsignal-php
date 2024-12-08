@@ -50,6 +50,9 @@ class AuthsignalRequestTransport
       case 'put':
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
         break;
+      case 'patch':
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PATCH");
+        break;
       case 'delete':
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
         break;
@@ -66,7 +69,7 @@ class AuthsignalRequestTransport
 
     // Set our default options.
     $curlOptions[CURLOPT_URL] = $url;
-    $curlOptions[CURLOPT_USERPWD] =  Authsignal::getApiKey() . ":";
+    $curlOptions[CURLOPT_USERPWD] =  Authsignal::getApiSecretKey() . ":";
     $curlOptions[CURLOPT_RETURNTRANSFER] = true;
     $curlOptions[CURLOPT_CONNECTTIMEOUT] = 3;
     $curlOptions[CURLOPT_TIMEOUT] = 10;

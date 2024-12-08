@@ -2,46 +2,45 @@
 
 class AuthsignalClient
 {
-  public static function apiUrl($path='')
+  public static function apiUrl($path = '')
   {
-    $apiEndpoint = getenv('AUTHSIGNAL_SERVER_API_ENDPOINT');
-    if ( !$apiEndpoint ) {
-      $apiBase    = Authsignal::$apiHostname;
-      $apiVersion = Authsignal::getApiVersion();
-      $apiEndpoint = $apiBase.'/'.$apiVersion;
-    }
-    return $apiEndpoint.$path;
+    $apiEndpoint = getenv('AUTHSIGNAL_API_URL') ?: Authsignal::$apiUrl;
+    return $apiEndpoint . $path;
   }
 
-  public function handleApiError($response, $status)
+  public function handleApiError($response, $statusCode)
   {
-    $type = $response['error'] ?? null;
-    $msg  = $response['errorDescription'] ?? null;
-    switch ($status) {
+    $errorCode = $response['errorCode'] ?? null;
+    $errorDescription  = $response['errorDescription'] ?? null;
+    switch ($statusCode) {
       case 400:
-        throw new AuthsignalBadRequest($msg, $type, $status);
+        throw new AuthsignalBadRequest($statusCode, $errorCode, $errorDescription);
       case 401:
-        throw new AuthsignalUnauthorizedError($msg, $type, $status);
+        throw new AuthsignalUnauthorizedError($statusCode, $errorCode, $errorDescription);
       case 403:
-        throw new AuthsignalForbiddenError($msg, $type, $status);
+        throw new AuthsignalForbiddenError($statusCode, $errorCode, $errorDescription);
       case 404:
-        throw new AuthsignalNotFoundError($msg, $type, $status);
+        throw new AuthsignalNotFoundError($statusCode, $errorCode, $errorDescription);
       case 422:
         // Handle subtype errors
-        switch($type) {
+        switch($errorCode) {
           case 'invalid_request_token':
-            throw new AuthsignalInvalidRequestTokenError($msg, $type, $status);
+            throw new AuthsignalInvalidRequestTokenError($statusCode, $errorCode, $errorDescription);
           default:
-            throw new AuthsignalInvalidParametersError($msg, $type, $status);
+            throw new AuthsignalInvalidParametersError($statusCode, $errorCode, $errorDescription);
         }
       default:
-        throw new AuthsignalApiError($msg, $type, $status);
+        throw new AuthsignalApiError($statusCode, $errorCode, $errorDescription);
     }
   }
 
   public function handleRequestError($request)
   {
-    throw new AuthsignalRequestError("$request->rError: $request->rMessage");
+      $statusCode = $request->rStatus; // HTTP statusCode code
+      $errorCode = $request->rError; // Error code
+      $errorDescription = $request->rMessage; // Error message
+    
+      throw new AuthsignalRequestError($statusCode, $errorCode, $errorDescription);
   }
 
   public function handleResponse($request)
@@ -64,7 +63,7 @@ class AuthsignalClient
 
   public function preCheck()
   {
-    $key = Authsignal::getApiKey();
+    $key = Authsignal::getApiSecretKey();
     if (empty($key)) {
       throw new AuthsignalConfigurationError();
     }
