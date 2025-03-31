@@ -75,7 +75,9 @@ class AuthsignalRequestTransport
     $curlOptions[CURLOPT_TIMEOUT] = 10;
     $curlOptions[CURLOPT_HTTPHEADER] = array(
       'Content-Type: application/json',
-      'Content-Length: ' . (is_null($body) ? 0 : strlen($body))
+      'Content-Length: ' . (is_null($body) ? 0 : strlen($body)),
+      'X-Authsignal-Version: ' . Authsignal::VERSION,
+      'User-Agent: Authsignal PHP'
     );
     $curlOptions[CURLOPT_HEADER] = true;
 
