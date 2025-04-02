@@ -1,3 +1,5 @@
+<img width="1070" alt="Authsignal" src="https://raw.githubusercontent.com/authsignal/authsignal-php/main/.github/images/authsignal.png">
+
 # Authsignal Server PHP SDK
 
 Check out our [official PHP SDK documentation](https://docs.authsignal.com/sdks/server/php).
