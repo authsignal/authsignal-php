@@ -77,7 +77,7 @@ class AuthsignalRequestTransport
       'Content-Type: application/json',
       'Content-Length: ' . (is_null($body) ? 0 : strlen($body)),
       'X-Authsignal-Version: ' . Authsignal::VERSION,
-      'User-Agent: Authsignal PHP'
+      'User-Agent: authsignal-php'
     );
     $curlOptions[CURLOPT_HEADER] = true;
 
