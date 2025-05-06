@@ -182,9 +182,7 @@ abstract class Authsignal
     $action = urlencode($params['action']);
     $attributes = isset($params['attributes']) ? $params['attributes'] : [];
     
-    $requestBody = ['attributes' => $attributes];
-    
-    list($response, $request) = $request->send("/users/{$userId}/actions/{$action}", $requestBody, 'post');
+    list($response, $request) = $request->send("/users/{$userId}/actions/{$action}", $attributes, 'post');
     
     return $response;
   }
