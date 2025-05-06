@@ -1,6 +1,6 @@
 {
     "name": "authsignal/authsignal-php",
-    "description": "Authsignal is a passwordless authentication/multifactor authentication step up service with a FraudOps rules engine",
+    "description": "Authsignal is a drop-in solution that adds modern authentication to your app with minimal coding. Quickly implement passkeys, context-aware MFA, and passwordless login options like biometrics, push notifications, OTP, and TOTP—all working seamlessly with your existing identity stack.",
     "type": "library",
     "require-dev": {
         "phpunit/phpunit": "^9.5",
