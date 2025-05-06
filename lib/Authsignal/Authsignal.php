@@ -5,7 +5,7 @@ use Firebase\JWT\Key;
 
 abstract class Authsignal
 {
-  const VERSION = '4.1.0';
+  const VERSION = '4.1.1';
 
   public static $apiSecretKey;
 
@@ -182,9 +182,7 @@ abstract class Authsignal
     $action = urlencode($params['action']);
     $attributes = isset($params['attributes']) ? $params['attributes'] : [];
     
-    $requestBody = ['attributes' => $attributes];
-    
-    list($response, $request) = $request->send("/users/{$userId}/actions/{$action}", $requestBody, 'post');
+    list($response, $request) = $request->send("/users/{$userId}/actions/{$action}", $attributes, 'post');
     
     return $response;
   }
