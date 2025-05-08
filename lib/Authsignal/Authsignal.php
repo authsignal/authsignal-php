@@ -8,6 +8,7 @@ abstract class Authsignal
   const VERSION = '4.1.2';
 
   public static $apiSecretKey;
+  public static $webhook;
 
   public static $apiUrl = 'https://signal.authsignal.com';
 
@@ -49,6 +50,17 @@ abstract class Authsignal
   public static function getCurlOpts()
   {
     return self::$curlOpts;
+  }
+
+  public static function webhook(): \Authsignal\Webhook
+  {
+    if (!self::$apiSecretKey) {
+      throw new \Exception('apiSecretKey is not set.');
+    }
+    if (!self::$webhook) {
+      self::$webhook = new \Authsignal\Webhook(self::$apiSecretKey);
+    }
+    return self::$webhook;
   }
 
   /**

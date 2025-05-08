@@ -19,3 +19,5 @@ require(dirname(__FILE__) . '/Authsignal/Authsignal.php');
 require(dirname(__FILE__) . '/Authsignal/AuthsignalClient.php');
 require(dirname(__FILE__) . '/Authsignal/AuthsignalRequestTransport.php');
 require(dirname(__FILE__) . '/Authsignal/Errors.php');
+require_once(dirname(__FILE__) . '/Authsignal/Webhook.php');
+require_once(dirname(__FILE__) . '/Authsignal/InvalidSignatureException.php');
