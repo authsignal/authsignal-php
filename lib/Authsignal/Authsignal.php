@@ -5,7 +5,7 @@ use Firebase\JWT\Key;
 
 abstract class Authsignal
 {
-  const VERSION = '4.2.0';
+  const VERSION = '4.3.0';
 
   public static $apiSecretKey;
   public static $webhook;
@@ -260,6 +260,116 @@ abstract class Authsignal
     $path = "/users/" . urlencode($params['userId']) . "/actions/" . urlencode($params['action']) . "/" . urlencode($params['idempotencyKey']);
 
     list($response, $request) = $request->send($path, $params['attributes'], 'patch');
+    return $response;
+  }
+
+  /**
+   * Challenge
+   * @param array $params An associative array of parameters:
+   *                      - string 'verificationMethod': The verification method (SMS, EMAIL_OTP)
+   *                      - string 'action': The action code
+   *                      - string|null 'email': The email address (optional)
+   *                      - string|null 'phoneNumber': The phone number (optional)
+   *                      - string|null 'smsChannel': The SMS channel (optional)
+   * @return array The authsignal response
+   */
+  public static function challenge(array $params)
+  {
+    $request = new AuthsignalClient();
+    
+    $payload = [
+      'verificationMethod' => $params['verificationMethod'],
+      'action' => $params['action'],
+      'email' => $params['email'] ?? null,
+      'phoneNumber' => $params['phoneNumber'] ?? null,
+      'smsChannel' => $params['smsChannel'] ?? null
+    ];
+
+    list($response, $request) = $request->send("/challenge", $payload, 'post');
+    return $response;
+  }
+
+  /**
+   * Verify
+   * @param array $params An associative array of parameters:
+   *                      - string 'challengeId': The challenge ID
+   *                      - string 'verificationCode': The verification code
+   * @return array The authsignal response
+   */
+  public static function verify(array $params)
+  {
+    $request = new AuthsignalClient();
+    
+    $payload = [
+      'challengeId' => $params['challengeId'],
+      'verificationCode' => $params['verificationCode']
+    ];
+
+    list($response, $request) = $request->send("/verify", $payload, 'post');
+    return $response;
+  }
+
+  /**
+   * Get Challenge
+   * @param array $params An associative array of parameters:
+   *                      - string|null 'challengeId': The challenge ID (optional)
+   *                      - string|null 'userId': The user ID (optional)
+   *                      - string|null 'action': The action code (optional)
+   *                      - string|null 'verificationMethod': The verification method (optional)
+   * @return array The authsignal response
+   */
+  public static function getChallenge(array $params)
+  {
+    $request = new AuthsignalClient();
+    
+    $queryParams = [];
+    if (!empty($params['challengeId'])) {
+        $queryParams['challengeId'] = urlencode($params['challengeId']);
+    }
+    if (!empty($params['userId'])) {
+        $queryParams['userId'] = urlencode($params['userId']);
+    }
+    if (!empty($params['action'])) {
+        $queryParams['action'] = urlencode($params['action']);
+    }
+    if (!empty($params['verificationMethod'])) {
+        $queryParams['verificationMethod'] = urlencode($params['verificationMethod']);
+    }
+
+    $queryString = !empty($queryParams) ? '?' . http_build_query($queryParams) : '';
+    $path = "/challenges" . $queryString;
+    
+    list($response, $request) = $request->send($path, null, 'get');
+    return $response;
+  }
+
+  /**
+   * Claim Challenge
+   * @param array $params An associative array of parameters:
+   *                      - string 'challengeId': The challenge ID
+   *                      - string 'userId': The user ID
+   *                      - bool|null 'skipVerificationCheck': Skip verification check (optional)
+   *                      - string|null 'deviceId': The device ID (optional)
+   *                      - string|null 'ipAddress': The IP address (optional)
+   *                      - string|null 'userAgent': The user agent (optional)
+   *                      - array|null 'custom': Custom data (optional)
+   * @return array The authsignal response
+   */
+  public static function claimChallenge(array $params)
+  {
+    $request = new AuthsignalClient();
+    
+    $payload = [
+      'challengeId' => $params['challengeId'],
+      'userId' => $params['userId'],
+      'skipVerificationCheck' => $params['skipVerificationCheck'] ?? null,
+      'deviceId' => $params['deviceId'] ?? null,
+      'ipAddress' => $params['ipAddress'] ?? null,
+      'userAgent' => $params['userAgent'] ?? null,
+      'custom' => $params['custom'] ?? null
+    ];
+
+    list($response, $request) = $request->send("/claim", $payload, 'post');
     return $response;
   }
 }
