@@ -240,7 +240,7 @@ abstract class Authsignal
     $userId = urlencode($params['userId']);
     $action = urlencode($params['action']);
     $idempotencyKey = urlencode($params['idempotencyKey']);
-    list($response, $request) = $request->send("/users/{$userId}/actions/{$action}/{$idempotencyKey}", array(), 'get');
+    list($response, $request) = $request->send("/users/{$userId}/actions/{$action}/{$idempotencyKey}", null, 'get');
 
     return $response;
   }
@@ -272,7 +272,7 @@ abstract class Authsignal
     $query = http_build_query($queryData);
     $path  = "/users/{$userId}/actions" . ($query ? "?{$query}" : "");
 
-    list($response, $request) = $request->send($path, $queryData, 'get');
+    list($response, $request) = $request->send($path, null, 'get');
     return $response;
   }
 
@@ -307,7 +307,7 @@ abstract class Authsignal
     $request = new AuthsignalClient();
     $userId = urlencode($params['userId']);
     $path = "/users/{$userId}/devices";
-    list($response, $request) = $request->send($path, [], 'get');
+    list($response, $request) = $request->send($path, null, 'get');
     return $response;
   }
 
@@ -323,7 +323,7 @@ abstract class Authsignal
     $userId = urlencode($params['userId']);
     $deviceId = urlencode($params['deviceId']);
     $path = "/users/{$userId}/devices/{$deviceId}/invalidate";
-    list($response, $request) = $request->send($path, [], 'post');
+    list($response, $request) = $request->send($path, null, 'post');
     return $response;
   }
 }
