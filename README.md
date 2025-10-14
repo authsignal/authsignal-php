@@ -2,7 +2,7 @@
 
 # Authsignal Server PHP SDK
 
-Check out our [official PHP SDK documentation](https://docs.authsignal.com/sdks/server/php).
+The official Authsignal PHP library for server-side applications. Use this SDK to easily integrate Authsignal's multi-factor authentication (MFA) and passwordless features into your PHP backend.
 
 ## Installation
 
@@ -73,3 +73,7 @@ $result = Authsignal::updateAction(
 ## License
 
 The library is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+
+## Documentation
+
+For more information and advanced usage examples, refer to the official [Authsignal Server-Side SDK documentation](https://docs.authsignal.com/sdks/server/overview).
