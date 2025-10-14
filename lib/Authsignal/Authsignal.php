@@ -125,9 +125,9 @@ abstract class Authsignal
     $request = new AuthsignalClient();
     $userId = urlencode($params['userId']);
     $path = "/users/{$userId}/authenticators";
-    
+
     list($response, $request) = $request->send($path, null, 'get');
-    return $response; 
+    return $response;
   }
 
 
@@ -180,7 +180,7 @@ abstract class Authsignal
 
   /**
    * Track an action
-   * 
+   *
    * @param array $params An associative array of parameters:
    *                      - string 'userId': The userId of the user you are tracking the action for
    *                      - string 'action': The action code that you are tracking
@@ -193,9 +193,9 @@ abstract class Authsignal
     $userId = urlencode($params['userId']);
     $action = urlencode($params['action']);
     $attributes = isset($params['attributes']) ? $params['attributes'] : [];
-    
+
     list($response, $request) = $request->send("/users/{$userId}/actions/{$action}", $attributes, 'post');
-    
+
     return $response;
   }
 
@@ -218,11 +218,11 @@ abstract class Authsignal
     ];
 
     list($response, $request) = $request->send("/validate", $payload, 'post');
-    
+
     if (isset($response['actionCode'])) {
         unset($response['actionCode']);
     }
-    
+
     return $response;
   }
 
@@ -246,6 +246,37 @@ abstract class Authsignal
   }
 
   /**
+   * Query actions for a user.*
+   *
+   * @param array $params An associative array of parameters:
+   *      string 'userId': The userId of the user you are tracking the action for
+   *      string 'codes': A comma-separated list of action codes to include in your query. If omitted, all action codes will be included.
+   *      string 'fromDate': If provided, the query will include actions from this date. Must be specified in ISO 8601 format - e.g. 2020-01-01T00:00:00Z. The default and maximum value is 30 days ago.
+   *
+   * @return array  The authsignal response
+   */
+  public static function queryActions(array $params)
+  {
+    $request = new AuthsignalClient();
+    $userId = urlencode($params['userId']);
+
+    $queryData = [];
+    if (isset($params['codes'])) {
+        $queryData['codes'] = $params['codes'];
+    }
+    if (isset($params['fromDate'])) {
+        $queryData['fromDate'] = $params['fromDate'];
+    }
+
+    // build query string
+    $query = http_build_query($queryData);
+    $path  = "/users/{$userId}/actions" . ($query ? "?{$query}" : "");
+
+    list($response, $request) = $request->send($path, $queryData, 'get');
+    return $response;
+  }
+
+  /**
    * Update Action
    * @param array $params An associative array of parameters:
    *                      - string 'userId': The userId of the user to update the action for
@@ -260,6 +291,39 @@ abstract class Authsignal
     $path = "/users/" . urlencode($params['userId']) . "/actions/" . urlencode($params['action']) . "/" . urlencode($params['idempotencyKey']);
 
     list($response, $request) = $request->send($path, $params['attributes'], 'patch');
+    return $response;
+  }
+
+  /**
+   * Get a list of devices associated with a user.
+   *
+   * @param array $params An associative array of parameters:
+   *      string 'userId': The userId of the user you are querying devices for.
+   *
+   * @return array The authsignal response (array of UserDevice)
+   */
+  public static function getUserDevices(array $params)
+  {
+    $request = new AuthsignalClient();
+    $userId = urlencode($params['userId']);
+    $path = "/users/{$userId}/devices";
+    list($response, $request) = $request->send($path, [], 'get');
+    return $response;
+  }
+
+  /**
+   * Invalidate a user's device.
+   *
+   * @param array $params Parameters: 'userId' (string), 'deviceId' (string)
+   * @return array The Authsignal response (UserDevice)
+   */
+  public static function invalidateUserDevice(array $params)
+  {
+    $request = new AuthsignalClient();
+    $userId = urlencode($params['userId']);
+    $deviceId = urlencode($params['deviceId']);
+    $path = "/users/{$userId}/devices/{$deviceId}/invalidate";
+    list($response, $request) = $request->send($path, [], 'post');
     return $response;
   }
 }
