@@ -5,12 +5,12 @@ use Firebase\JWT\Key;
 
 abstract class Authsignal
 {
-  const VERSION = '4.2.0';
+  const VERSION = '4.3.0';
 
   public static $apiSecretKey;
   public static $webhook;
 
-  public static $apiUrl = 'https://signal.authsignal.com';
+  public static $apiUrl = 'https://api.authsignal.com';
 
   private static $curlOpts = array();
   private static $validCurlOpts = array(CURLOPT_CONNECTTIMEOUT,
