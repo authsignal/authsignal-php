@@ -302,7 +302,7 @@ abstract class Authsignal
    *
    * @return array The authsignal response (array of UserDevice)
    */
-  public static function getUserDevices(array $params)
+  public static function getDevices(array $params)
   {
     $request = new AuthsignalClient();
     $userId = urlencode($params['userId']);
@@ -314,10 +314,12 @@ abstract class Authsignal
   /**
    * Invalidate a user's device.
    *
-   * @param array $params Parameters: 'userId' (string), 'deviceId' (string)
+   * @param array $params An associative array of parameters:
+   *                      - string 'userId': The userId of the user
+   *                      - string 'deviceId': The deviceId to invalidate
    * @return array The Authsignal response (UserDevice)
    */
-  public static function invalidateUserDevice(array $params)
+  public static function invalidateDevice(array $params)
   {
     $request = new AuthsignalClient();
     $userId = urlencode($params['userId']);
