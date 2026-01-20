@@ -72,6 +72,161 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
         $this->assertEquals($response["success"], true);
     }
 
+    public function testQueryUsers() {
+        $mockedResponse = array(
+            "users" => array(
+                array(
+                    "userId" => "user-1",
+                    "email" => "test@example.com",
+                    "emailVerified" => true,
+                    "phoneNumber" => "+1234567890",
+                    "phoneNumberVerified" => false,
+                    "username" => "user1"
+                )
+            ),
+            "lastEvaluatedUserId" => "user-1"
+        );
+
+        self::$server->setResponseOfPath("/users", new Response(json_encode($mockedResponse)));
+
+        // At least one of username, email, or phoneNumber is required by the API
+        $params = array("email" => "test@example.com");
+        $response = Authsignal::queryUsers($params);
+
+        $this->assertIsArray($response["users"]);
+        $this->assertCount(1, $response["users"]);
+        $this->assertEquals($response["users"][0]["userId"], "user-1");
+        $this->assertEquals($response["users"][0]["email"], "test@example.com");
+        $this->assertEquals($response["lastEvaluatedUserId"], "user-1");
+    }
+
+    public function testQueryUsersWithPagination() {
+        $mockedResponse = array(
+            "users" => array(
+                array(
+                    "userId" => "user-2",
+                    "email" => "test@example.com",
+                    "emailVerified" => true,
+                    "phoneNumber" => null,
+                    "phoneNumberVerified" => false,
+                    "username" => null
+                )
+            )
+        );
+
+        self::$server->setResponseOfPath("/users", new Response(json_encode($mockedResponse)));
+
+        $params = array(
+            "email" => "test@example.com",
+            "limit" => 10,
+            "lastEvaluatedUserId" => "user-1"
+        );
+
+        $response = Authsignal::queryUsers($params);
+
+        $this->assertIsArray($response["users"]);
+        $this->assertCount(1, $response["users"]);
+        $this->assertEquals($response["users"][0]["email"], "test@example.com");
+    }
+
+    public function testQueryUsersWithAllParams() {
+        $mockedResponse = array(
+            "users" => array(
+                array(
+                    "userId" => "user-3",
+                    "email" => "test@example.com",
+                    "emailVerified" => true,
+                    "phoneNumber" => "+1234567890",
+                    "phoneNumberVerified" => true,
+                    "username" => "testuser"
+                )
+            ),
+            "lastEvaluatedUserId" => "user-3",
+            "tokenPayload" => array("sub" => "user-3")
+        );
+
+        self::$server->setResponseOfPath("/users", new Response(json_encode($mockedResponse)));
+
+        $params = array(
+            "username" => "testuser",
+            "email" => "test@example.com",
+            "phoneNumber" => "+1234567890",
+            "token" => "some-token",
+            "limit" => 5,
+            "lastEvaluatedUserId" => "user-2"
+        );
+
+        $response = Authsignal::queryUsers($params);
+
+        $this->assertIsArray($response["users"]);
+        $this->assertCount(1, $response["users"]);
+        $this->assertEquals("user-3", $response["users"][0]["userId"]);
+        $this->assertEquals("testuser", $response["users"][0]["username"]);
+        $this->assertEquals("+1234567890", $response["users"][0]["phoneNumber"]);
+        $this->assertTrue($response["users"][0]["phoneNumberVerified"]);
+        $this->assertEquals("user-3", $response["lastEvaluatedUserId"]);
+        $this->assertArrayHasKey("tokenPayload", $response);
+    }
+
+    public function testQueryUsersEmptyResult() {
+        $mockedResponse = array(
+            "users" => array()
+        );
+
+        self::$server->setResponseOfPath("/users", new Response(json_encode($mockedResponse)));
+
+        $params = array("email" => "nonexistent@example.com");
+        $response = Authsignal::queryUsers($params);
+
+        $this->assertIsArray($response["users"]);
+        $this->assertCount(0, $response["users"]);
+        $this->assertArrayNotHasKey("lastEvaluatedUserId", $response);
+    }
+
+    public function testQueryUsersMultipleResults() {
+        $mockedResponse = array(
+            "users" => array(
+                array(
+                    "userId" => "user-1",
+                    "email" => "user1@example.com",
+                    "emailVerified" => true,
+                    "phoneNumber" => null,
+                    "phoneNumberVerified" => false,
+                    "username" => null
+                ),
+                array(
+                    "userId" => "user-2",
+                    "email" => "user2@example.com",
+                    "emailVerified" => false,
+                    "phoneNumber" => "+9876543210",
+                    "phoneNumberVerified" => true,
+                    "username" => "user2"
+                ),
+                array(
+                    "userId" => "user-3",
+                    "email" => "user3@example.com",
+                    "emailVerified" => true,
+                    "phoneNumber" => null,
+                    "phoneNumberVerified" => false,
+                    "username" => "user3"
+                )
+            ),
+            "lastEvaluatedUserId" => "user-3"
+        );
+
+        self::$server->setResponseOfPath("/users", new Response(json_encode($mockedResponse)));
+
+        $params = array("email" => "example.com", "limit" => 3);
+        $response = Authsignal::queryUsers($params);
+
+        $this->assertIsArray($response["users"]);
+        $this->assertCount(3, $response["users"]);
+        $this->assertEquals("user-1", $response["users"][0]["userId"]);
+        $this->assertEquals("user-2", $response["users"][1]["userId"]);
+        $this->assertEquals("user-3", $response["users"][2]["userId"]);
+        $this->assertEquals("user-3", $response["lastEvaluatedUserId"]);
+    }
+
     public function testGetAuthenticators() {
         $mockedResponse = array(
             array(
