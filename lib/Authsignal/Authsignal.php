@@ -112,6 +112,48 @@ abstract class Authsignal
     return $response;
   }
 
+  /**
+   * Query users
+   * @param array $params An associative array of parameters:
+   *                      - string 'username': Filter by username (optional)
+   *                      - string 'email': Filter by email (optional)
+   *                      - string 'phoneNumber': Filter by phone number (optional)
+   *                      - string 'token': Filter by token (optional)
+   *                      - int 'limit': Maximum number of users to return (optional)
+   *                      - string 'lastEvaluatedUserId': For pagination, the last userId from previous response (optional)
+   * @return array The authsignal response containing users array and pagination info
+   */
+  public static function queryUsers(array $params = [])
+  {
+    $request = new AuthsignalClient();
+
+    $queryData = [];
+    if (isset($params['username'])) {
+        $queryData['username'] = $params['username'];
+    }
+    if (isset($params['email'])) {
+        $queryData['email'] = $params['email'];
+    }
+    if (isset($params['phoneNumber'])) {
+        $queryData['phoneNumber'] = $params['phoneNumber'];
+    }
+    if (isset($params['token'])) {
+        $queryData['token'] = $params['token'];
+    }
+    if (isset($params['limit'])) {
+        $queryData['limit'] = $params['limit'];
+    }
+    if (isset($params['lastEvaluatedUserId'])) {
+        $queryData['lastEvaluatedUserId'] = $params['lastEvaluatedUserId'];
+    }
+
+    $query = http_build_query($queryData);
+    $path = "/users" . ($query ? "?{$query}" : "");
+
+    list($response, $request) = $request->send($path, null, 'get');
+    return $response;
+  }
+
 
   /**
    * Get Authenticators
@@ -174,7 +216,7 @@ abstract class Authsignal
         list($response, $request) = $request->send($path, null, 'delete');
         return $response;
     } catch (Exception $e) {
-        throw new AuthsignalApiException($e->getMessage(), $path, $e);
+        throw $e;
     }
   }
 
