@@ -15,6 +15,6 @@
         "MIT"
     ],
     "require": {
-        "firebase/php-jwt": "^6.8"
+        "firebase/php-jwt": "^7"
     }
 }

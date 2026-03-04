@@ -328,7 +328,7 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
         $this->assertEquals($response["idempotencyKey"], $mockedResponse["idempotencyKey"]);
     }
 
-    public function testValidateChallenge() {
+    public function testInvalidKeyBeforeChallenge() {
         $mockedResponse = array("state" => "CHALLENGE_SUCCEEDED",
               "idempotencyKey" => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
               "stateUpdatedAt" => "2022-07-25T03:19:00.316Z",
@@ -340,6 +340,44 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
         self::$server->setResponseOfPath("/validate", new Response(json_encode($mockedResponse)));
 
         $key = "secret";
+        $testTokenPayload = [
+            'iss' => 'http://example.org',
+            'aud' => 'http://example.com',
+            'iat' => 1356999524,
+            'nbf' => 1357000000,
+            'other' => [
+                'userId' => "123:test",
+                'state' => "CHALLENGE_SUCCEEDED",
+                'action' => 'signIn',
+                'idempotencyKey' => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
+            ]
+        ];
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('Provided key is too short');
+        $token = JWT::encode($testTokenPayload, $key, 'HS256');
+
+        $params = array(
+            "userId" => "123:test",
+            "token" => $token
+        );
+
+        $response = Authsignal::validateChallenge($params);
+
+        $this->assertEquals($response['isValid'], "true");
+    }
+
+    public function testValidateChallenge() {
+        $mockedResponse = array("state" => "CHALLENGE_SUCCEEDED",
+              "idempotencyKey" => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
+              "stateUpdatedAt" => "2022-07-25T03:19:00.316Z",
+              "userId" => "123:test",
+              "isValid" => "true",
+              "action" => "signIn",
+              "verificationMethod" => "AUTHENTICATOR_APP");
+
+        self::$server->setResponseOfPath("/validate", new Response(json_encode($mockedResponse)));
+
+        $key = "secretKeyMustBeAtLeast32Characters";
         $testTokenPayload = [
             'iss' => 'http://example.org',
             'aud' => 'http://example.com',
