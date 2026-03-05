@@ -4,8 +4,6 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\Response;
-use Firebase\JWT\JWT;
-
 class AuthsignalTest extends PHPUnit\Framework\TestCase {
     /** @var MockWebServer */
     protected static $server;
@@ -329,39 +327,42 @@ class AuthsignalTest extends PHPUnit\Framework\TestCase {
     }
 
     public function testValidateChallenge() {
-        $mockedResponse = array("state" => "CHALLENGE_SUCCEEDED",
-              "idempotencyKey" => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
-              "stateUpdatedAt" => "2022-07-25T03:19:00.316Z",
-              "userId" => "123:test",
-              "isValid" => "true",
-              "action" => "signIn",
-              "verificationMethod" => "AUTHENTICATOR_APP");
-
-        self::$server->setResponseOfPath("/validate", new Response(json_encode($mockedResponse)));
-
-        $key = "secret";
-        $testTokenPayload = [
-            'iss' => 'http://example.org',
-            'aud' => 'http://example.com',
-            'iat' => 1356999524,
-            'nbf' => 1357000000,
-            'other' => [
-                'userId' => "123:test",
-                'state' => "CHALLENGE_SUCCEEDED",
-                'action' => 'signIn',
-                'idempotencyKey' => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
-            ]
-        ];
-        $token = JWT::encode($testTokenPayload, $key, 'HS256');
-
-        $params = array(
-            "userId" => "123:test",
-            "token" => $token
+        $trackResponse = array(
+            "state" => "CHALLENGE_REQUIRED",
+            "idempotencyKey" => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
+            "token" => "eyJhbGciOiJIUzI1NiJ9.test-token",
+            "ruleIds" => []
         );
 
-        $response = Authsignal::validateChallenge($params);
+        self::$server->setResponseOfPath('/users/123%3Atest/actions/signIn', new Response(json_encode($trackResponse)));
 
-        $this->assertEquals($response['isValid'], "true");
+        $trackParams = array(
+            "userId" => "123:test",
+            "action" => "signIn",
+        );
+
+        $trackResult = Authsignal::track($trackParams);
+
+        $validateResponse = array(
+            "state" => "CHALLENGE_REQUIRED",
+            "idempotencyKey" => "5924a649-b5d3-4baf-a4ab-4b812dde97a0",
+            "userId" => "123:test",
+            "isValid" => false,
+            "action" => "signIn",
+        );
+
+        self::$server->setResponseOfPath("/validate", new Response(json_encode($validateResponse)));
+
+        $validateParams = array(
+            "token" => $trackResult['token'],
+        );
+
+        $response = Authsignal::validateChallenge($validateParams);
+
+        $this->assertEquals($response['userId'], "123:test");
+        $this->assertEquals($response['action'], "signIn");
+        $this->assertEquals($response['state'], "CHALLENGE_REQUIRED");
+        $this->assertFalse($response['isValid']);
     }
 
     public function testGetAction() {
