@@ -1,11 +1,8 @@
 <?php
 
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
-
 abstract class Authsignal
 {
-  const VERSION = '4.4.0';
+  const VERSION = '4.5.0';
 
   public static $apiSecretKey;
   public static $webhook;
