@@ -2,7 +2,7 @@
 
 abstract class Authsignal
 {
-  const VERSION = '4.5.0';
+  const VERSION = '4.6.0';
 
   public static $apiSecretKey;
   public static $webhook;
