@@ -15,6 +15,15 @@ class WebhookTest extends TestCase
         \Authsignal::setApiSecretKey(self::TEST_API_SECRET_KEY);
     }
 
+    private function createSignature(string $payload, ?int $timestamp = null): string
+    {
+        $timestamp = $timestamp ?? time();
+        $hmacContent = $timestamp . "." . $payload;
+        $computedSignature = str_replace("=", "", base64_encode(hash_hmac("sha256", $hmacContent, self::TEST_API_SECRET_KEY, true)));
+
+        return "t={$timestamp},v2={$computedSignature}";
+    }
+
     public function testInvalidSignatureFormat()
     {
         $payload = '{}';
@@ -115,4 +124,55 @@ class WebhookTest extends TestCase
         $this->assertIsObject($event);
         $this->assertEquals(1, $event->version);
     }
-} 
+
+    public function testEventWithCustomVariables()
+    {
+        $payload = json_encode([
+            'version' => 1,
+            'id' => 'bc1598bc-e5d6-4c69-9afb-1a6fe3469d6e',
+            'source' => 'https://authsignal.com',
+            'time' => '2025-02-20T01:51:56.070Z',
+            'tenantId' => '7752d28e-e627-4b1b-bb81-b45d68d617bc',
+            'type' => 'sms.created',
+            'data' => [
+                'actionCode' => 'smsVerify',
+                'customVariables' => [
+                    'action_journeyType' => 'ForgotChangePassword',
+                    'retryCount' => 2,
+                    'isRecovery' => true,
+                    'channels' => ['sms', 'email'],
+                ],
+            ],
+        ]);
+
+        $event = \Authsignal::webhook()->constructEvent($payload, $this->createSignature($payload));
+
+        $this->assertEquals('ForgotChangePassword', $event->data->customVariables->action_journeyType);
+        $this->assertEquals(2, $event->data->customVariables->retryCount);
+        $this->assertTrue($event->data->customVariables->isRecovery);
+        $this->assertEquals(['sms', 'email'], $event->data->customVariables->channels);
+    }
+
+    public function testLogEventBatch()
+    {
+        $payload = json_encode([
+            'records' => [[
+                'version' => 1,
+                'id' => 'bc1598bc-e5d6-4c69-9afb-1a6fe3469d6e',
+                'source' => 'https://authsignal.com',
+                'time' => '2025-02-20T01:51:56.070Z',
+                'tenantId' => '7752d28e-e627-4b1b-bb81-b45d68d617bc',
+                'type' => 'action.log_created',
+                'record' => [
+                    'userId' => 'b9f74d36-fcfc-4efc-87f1-3664ab5a7fb0',
+                    'customVariables' => ['journeyType' => 'accountRecovery'],
+                ],
+            ]],
+        ]);
+
+        $batch = \Authsignal::webhook()->constructEvent($payload, $this->createSignature($payload));
+
+        $this->assertCount(1, $batch->records);
+        $this->assertEquals('accountRecovery', $batch->records[0]->record->customVariables->journeyType);
+    }
+}
