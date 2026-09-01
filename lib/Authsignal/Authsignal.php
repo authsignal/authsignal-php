@@ -2,12 +2,13 @@
 
 abstract class Authsignal
 {
-  const VERSION = '4.5.0';
+  const VERSION = '4.6.0';
 
   public static $apiSecretKey;
   public static $webhook;
 
   public static $apiUrl = 'https://api.authsignal.com';
+  private static $retries = 2;
 
   private static $curlOpts = array();
   private static $validCurlOpts = array(CURLOPT_CONNECTTIMEOUT,
@@ -28,6 +29,19 @@ abstract class Authsignal
   public static function setApiUrl($apiUrl)
   {
     self::$apiUrl = $apiUrl;
+  }
+
+  public static function setRetries($retries)
+  {
+    if (!is_int($retries) || $retries < 0) {
+      throw new AuthsignalConfigurationError(0, 'invalid_retries', 'Retries must be a non-negative integer.');
+    }
+    self::$retries = $retries;
+  }
+
+  public static function getRetries()
+  {
+    return self::$retries;
   }
 
   public static function setCurlOpts($curlOpts)

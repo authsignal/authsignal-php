@@ -37,57 +37,118 @@ class AuthsignalRequestTransport
     }
   }
 
+  private function isReplayable($method, $url, $payload)
+  {
+    if (in_array($method, array('get', 'head', 'options'))) {
+      return true;
+    }
+
+    if (is_array($payload) && !empty($payload['idempotencyKey'])) {
+      return true;
+    }
+
+    return $method === 'patch' && preg_match('#/actions/[^/]+/[^/]+$#', parse_url($url, PHP_URL_PATH));
+  }
+
+  private function isTransientCurlError($error)
+  {
+    return in_array($error, array(
+      CURLE_COULDNT_CONNECT,
+      CURLE_OPERATION_TIMEDOUT,
+      CURLE_SEND_ERROR,
+      CURLE_RECV_ERROR,
+      CURLE_GOT_NOTHING,
+      CURLE_PARTIAL_FILE
+    ));
+  }
+
+  private function shouldRetry($method, $url, $payload, $retryCount)
+  {
+    if ($retryCount >= Authsignal::getRetries() || !$this->isReplayable($method, $url, $payload)) {
+      return false;
+    }
+
+    if ($this->rError && $this->isTransientCurlError($this->rError)) {
+      return true;
+    }
+
+    return $this->rStatus === 429 || ($this->rStatus >= 500 && $this->rStatus <= 599);
+  }
+
+  private function retryDelayMilliseconds($retryCount)
+  {
+    $baseDelay = 100 * pow(2, $retryCount);
+    $delay = $baseDelay + random_int(0, (int) ($baseDelay * 0.2));
+
+    $retryAfter = null;
+    foreach ($this->rHeaders as $name => $value) {
+      if (strcasecmp($name, 'Retry-After') === 0) {
+        $retryAfter = $value;
+        break;
+      }
+    }
+
+    if ($this->rStatus === 429 && $retryAfter !== null) {
+      $retryAfterMs = is_numeric($retryAfter)
+        ? ((float) $retryAfter * 1000)
+        : max(0, (strtotime($retryAfter) - time()) * 1000);
+      $delay = max($delay, $retryAfterMs);
+    }
+
+    return (int) $delay;
+  }
+
   public function send($method, $url, $payload) {
-    $curl = curl_init();
     $method = strtolower($method);
-    switch($method) {
-      case 'post':
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
-        break;
-      case 'get':
-        curl_setopt($curl, CURLOPT_HTTPGET, true);
-        break;
-      case 'put':
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
-        break;
-      case 'patch':
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PATCH");
-        break;
-      case 'delete':
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
-        break;
-      default:
-        throw new AuthsignalRequestError();
-    }
-    $curlOptions = array();
-
     $body = empty($payload) ? null : json_encode($payload);
+    $retryCount = 0;
 
-    if ($body) {
-      $curlOptions[CURLOPT_POSTFIELDS] = $body;
-    }
+    do {
+      $curl = curl_init();
+      $curlOptions = array();
 
-    // Set our default options.
-    $curlOptions[CURLOPT_URL] = $url;
-    $curlOptions[CURLOPT_USERPWD] =  Authsignal::getApiSecretKey() . ":";
-    $curlOptions[CURLOPT_RETURNTRANSFER] = true;
-    $curlOptions[CURLOPT_CONNECTTIMEOUT] = 3;
-    $curlOptions[CURLOPT_TIMEOUT] = 10;
-    $curlOptions[CURLOPT_HTTPHEADER] = array(
-      'Content-Type: application/json',
-      'Content-Length: ' . (is_null($body) ? 0 : strlen($body)),
-      'X-Authsignal-Version: ' . Authsignal::VERSION,
-      'User-Agent: authsignal-php'
-    );
-    $curlOptions[CURLOPT_HEADER] = true;
+      switch($method) {
+        case 'post':
+        case 'put':
+        case 'patch':
+        case 'delete':
+          $curlOptions[CURLOPT_CUSTOMREQUEST] = strtoupper($method);
+          break;
+        case 'get':
+          $curlOptions[CURLOPT_HTTPGET] = true;
+          break;
+        default:
+          throw new AuthsignalRequestError();
+      }
 
-    // Merge user defined options.
-    $userOptions = Authsignal::getCurlOpts();
-    $curlOptions = $userOptions + $curlOptions;
+      if ($body) {
+        $curlOptions[CURLOPT_POSTFIELDS] = $body;
+      }
 
-    curl_setopt_array($curl, $curlOptions);
-    $this->setResponse($curl);
+      $curlOptions[CURLOPT_URL] = $url;
+      $curlOptions[CURLOPT_USERPWD] = Authsignal::getApiSecretKey() . ":";
+      $curlOptions[CURLOPT_RETURNTRANSFER] = true;
+      $curlOptions[CURLOPT_CONNECTTIMEOUT] = 3;
+      $curlOptions[CURLOPT_TIMEOUT] = 10;
+      $curlOptions[CURLOPT_HTTPHEADER] = array(
+        'Content-Type: application/json',
+        'Content-Length: ' . (is_null($body) ? 0 : strlen($body)),
+        'X-Authsignal-Version: ' . Authsignal::VERSION,
+        'User-Agent: authsignal-php'
+      );
+      $curlOptions[CURLOPT_HEADER] = true;
 
-    curl_close($curl);
+      $userOptions = Authsignal::getCurlOpts();
+      curl_setopt_array($curl, $userOptions + $curlOptions);
+      $this->setResponse($curl);
+      curl_close($curl);
+
+      if (!$this->shouldRetry($method, $url, $payload, $retryCount)) {
+        break;
+      }
+
+      usleep($this->retryDelayMilliseconds($retryCount) * 1000);
+      $retryCount++;
+    } while (true);
   }
 }
