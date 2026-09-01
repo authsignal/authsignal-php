@@ -25,10 +25,6 @@ Authsignal::setApiSecretKey(getenv('AUTHSIGNAL_SECRET_KEY'));
 Authsignal::setApiUrl(getenv('AUTHSIGNAL_API_URL')); // Use region-specific URL
 ```
 
-### Retry policy
-
-Requests use a 3-second connect timeout, 10-second total timeout, and retry twice by default with exponential backoff and jitter. Transient network failures, `429`, and `5xx` responses are retried for `GET`, `HEAD`, and `OPTIONS`; writes are retried only when they carry an idempotency key. Call `Authsignal::setRetries(0)` to disable retries.
-
 ### API URLs by Region
 
 | Region      | API URL                          |
