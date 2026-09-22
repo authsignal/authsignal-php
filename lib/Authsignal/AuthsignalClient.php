@@ -10,7 +10,7 @@ class AuthsignalClient
 
   public function handleApiError($response, $statusCode)
   {
-    $errorCode = $response['errorCode'] ?? null;
+    $errorCode = $response['errorCode'] ?? $response['error'] ?? null;
     $errorDescription  = $response['errorDescription'] ?? null;
     switch ($statusCode) {
       case 400:

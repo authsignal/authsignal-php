@@ -2,7 +2,7 @@
 
 abstract class Authsignal
 {
-  const VERSION = '4.5.0';
+  const VERSION = '4.6.0';
 
   public static $apiSecretKey;
   public static $webhook;
@@ -58,6 +58,20 @@ abstract class Authsignal
       self::$webhook = new \Authsignal\Webhook(self::$apiSecretKey);
     }
     return self::$webhook;
+  }
+
+  /** Start a flow with actionCode and optional user, attributes, redirectUrl and clientId. */
+  public static function startFlow(array $params)
+  {
+    list($response) = (new AuthsignalClient())->send('/flows', $params);
+    return $response;
+  }
+
+  /** Verify a flow with actionCode and challengeToken. */
+  public static function verifyFlow(array $params)
+  {
+    list($response) = (new AuthsignalClient())->send('/flows/verify', $params);
+    return $response;
   }
 
   /**
