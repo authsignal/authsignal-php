@@ -60,14 +60,12 @@ abstract class Authsignal
     return self::$webhook;
   }
 
-  /** Start a flow with actionCode and optional user, attributes, redirectUrl and clientId. */
   public static function startFlow(array $params)
   {
     list($response) = (new AuthsignalClient())->send('/flows', $params);
     return $response;
   }
 
-  /** Verify a flow with actionCode and challengeToken. */
   public static function verifyFlow(array $params)
   {
     list($response) = (new AuthsignalClient())->send('/flows/verify', $params);
